@@ -4,6 +4,14 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SaintSender.DesktopUI.Views"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+         TextElement.FontWeight="Regular"
+         TextElement.FontSize="13"
+         TextOptions.TextFormattingMode="Ideal"
+         TextOptions.TextRenderingMode="Auto"
+         Background="{DynamicResource MaterialDesignPaper}"
+         FontFamily="{DynamicResource MaterialDesignFont}"
         mc:Ignorable="d"
         Title="ReadEmailWindow" Height="450" Width="800">
     <Grid>
@@ -22,20 +30,28 @@
         </Grid.RowDefinitions>
         <TextBlock Grid.Column="1"
                    Grid.Row="1"
-                   x:Name="ReadSubject">
+                   x:Name="ReadSubject"
+                   Margin="5"
+                   >
         </TextBlock>
         <TextBlock Grid.Column="1"
                    Grid.Row="2"
-                   x:Name="ReadFrom">
+                   x:Name="ReadFrom"
+                   Margin="5"
+                   >
         </TextBlock>
         <TextBlock Grid.Column="1"
                    Grid.Row="3"
-                   x:Name="ReadDateReceived">
+                   x:Name="ReadDateReceived"
+                   Margin="5"
+                   >
         </TextBlock>
-        <TextBlock Grid.Column="1"
+        <TextBox Grid.Column="1"
                    Grid.Row="4"
-                   x:Name="ReadMessage">
-        </TextBlock>
+                   x:Name="ReadMessage"
+                   Margin="5"
+                   >
+        </TextBox>
         
     </Grid>
 </Window>

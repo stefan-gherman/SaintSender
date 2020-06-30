@@ -28,13 +28,10 @@ namespace SaintSender.DesktopUI.Views
         {
             InitializeComponent();
             ReadSubject.Text = selectedEmail.Subject;
-            Subject = selectedEmail.Subject;
-            ReadFrom.Text = selectedEmail.From;
-            From = selectedEmail.From;
+            ReadFrom.Text = selectedEmail.From.ToString();
             ReadDateReceived.Text = selectedEmail.DateReceived.ToString();
-            ReceivedDate = selectedEmail.DateReceived;
             ReadMessage.Text = selectedEmail.Message;
-            Message = selectedEmail.Message;
+
         }
     }
 }

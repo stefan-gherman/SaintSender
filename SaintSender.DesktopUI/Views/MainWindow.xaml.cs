@@ -59,18 +59,21 @@ namespace SaintSender.DesktopUI
 
                 var uids = client.Inbox.Search(SearchQuery.All);
                 var items = client.Inbox.Fetch(uids, MessageSummaryItems.Flags);
+                
+
 
                 for (int i = inbox.Count - 1; i >= inbox.Count - 20; i--)
                 {
                     var message = inbox.GetMessage(i);
                     Console.WriteLine($"From: {message.From} - Subject: {message.Subject} Date:{message.Date} x: {items[i].Flags.Value}");
+                    
                     tempBag.Add(new Email()
                     {
                         Read = items[i].Flags.Value.ToString(),
                         From = message.From.ToString(),
                         DateReceived = message.Date.DateTime,
                         Subject = message.Subject.ToString(),
-                        Message = message.Body.ToString(),
+                        Message = message.TextBody,
                         UniqueID = message.MessageId.ToString()
                     });
                 }
