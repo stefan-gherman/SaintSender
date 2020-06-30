@@ -56,23 +56,25 @@ namespace SaintSender.DesktopUI
                 Console.WriteLine("Total messages: {0}", inbox.Count);
                 Console.WriteLine("Recent messages: {0}", inbox.Recent);
 
+                var uids = client.Inbox.Search(SearchQuery.All);
+                var items = client.Inbox.Fetch(uids, MessageSummaryItems.Flags);
+                //foreach (var item in items)
+                //{
+                //    Console.WriteLine("Message # {0} has flags: {1}", item.Index, item.Flags.Value);
+                //    if (item.Flags.Value.HasFlag(MessageFlags.Seen))
+                //        Console.WriteLine("The message has been read.");
+                //    else
+                //        Console.WriteLine("The message has not been read.");
+                //}
+
                 for (int i = 0; i < inbox.Count; i++)
                 {
                     var message = inbox.GetMessage(i);
-                    Console.WriteLine($"From: {message.From} - Subject: {message.Subject} x: ");
+                    Console.WriteLine($"From: {message.From} - Subject: {message.Subject} x: {items[i].Flags.Value}");
                 }
 
                 Console.WriteLine("*************************************");
-                var uids = client.Inbox.Search(SearchQuery.All);
-                var items = client.Inbox.Fetch(uids, MessageSummaryItems.Flags);
-                foreach (var item in items)
-                {
-                    Console.WriteLine("Message # {0} has flags: {1}", item.Index, item.Flags.Value);
-                    if (item.Flags.Value.HasFlag(MessageFlags.Seen))
-                        Console.WriteLine("The message has been read.");
-                    else
-                        Console.WriteLine("The message has not been read.");
-                }
+                
 
                 client.Disconnect(true);
             }
