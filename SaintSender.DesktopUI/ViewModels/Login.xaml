@@ -22,6 +22,7 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="5" />
+
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="5" />
@@ -85,5 +86,31 @@
             Margin="75,62,52,68"
             Click="CloseLoginWindow"
             Content="Close" />
+
+        <!--  Error text  -->
+        <TextBlock
+            x:Name="error"
+            Grid.Row="3"
+            Grid.Column="1"
+            Grid.ColumnSpan="3"
+            Margin="6,120,4.667,17"
+            FontSize="25"
+            Foreground="Red"
+            RenderTransformOrigin="0.174,5.717"
+            Text="Invalid credentials"
+            Visibility="Hidden" />
+
+        <!--  Success text  -->
+        <TextBlock
+            x:Name="success"
+            Grid.Row="3"
+            Grid.Column="1"
+            Grid.ColumnSpan="3"
+            Margin="6,120,4.667,17"
+            FontSize="25"
+            Foreground="Blue"
+            RenderTransformOrigin="0.174,5.717"
+            Text="You logged in"
+            Visibility="Hidden" />
     </Grid>
 </Window>

@@ -1,7 +1,7 @@
-﻿using SaintSender.Core.Entities;
-using System;
-using System.IO;
+﻿using MailKit.Net.Imap;
+using SaintSender.Core.Entities;
 using SaintSender.Core.Services;
+using System;
 using System.Text.RegularExpressions;
 using System.Windows;
 
@@ -32,7 +32,6 @@ namespace SaintSender.DesktopUI.ViewModels
             Close();
         }
 
-
         // refactor in multiple methods
         private void SignInClick(object sender, RoutedEventArgs e)
         {
@@ -44,19 +43,33 @@ namespace SaintSender.DesktopUI.ViewModels
                 Password = password.Password.ToString().Length != 0 ? password.Password.ToString() : null
             };
 
-
             //TODO execute this method only when user connects to gmail successfully
             JsonService.SerializeToJson(userData);
 
             //todo Connect to gmail in this try and catch. Call MainWindow method and if connection is not succesfully display user a message.
             try
             {
+                using (var client = new ImapClient())
+                {
+                    client.Connect("imap.gmail.com", 993, true);
+                    client.Authenticate(userData.Email, userData.Password);
+
+                    if (error.Visibility == Visibility.Visible)
+                    {
+                        error.Visibility = Visibility.Hidden;
+                        success.Visibility = Visibility.Visible;
+                    }
+                }
+                success.Visibility = Visibility.Visible;
+
                 MainWindow mainWindow = new MainWindow(userData);
                 mainWindow.Show();
                 Close();
             }
-            catch (Exception ex){
+            catch (Exception ex)
+            {
                 Console.WriteLine(ex.Message);
+                error.Visibility = Visibility.Visible;
             }
         }
 
