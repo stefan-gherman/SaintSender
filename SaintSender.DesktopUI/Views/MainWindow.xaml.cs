@@ -17,6 +17,8 @@ using MailKit.Net.Imap;
 using MailKit.Search;
 using MailKit;
 using MimeKit;
+using System.Collections.ObjectModel;
+using SaintSender.Core.Entities;
 
 namespace SaintSender.DesktopUI
 {
@@ -25,19 +27,10 @@ namespace SaintSender.DesktopUI
     /// </summary>
     public partial class MainWindow : Window
     {
+        public ObservableCollection<Email> EmailsForDisplay { get; set; } = new ObservableCollection<Email>();
         public MainWindow()
         {
             InitializeComponent();
-        }
-
-        private void GreetBtn_Click(object sender, RoutedEventArgs e)
-        {
-            var service = new GreetService();
-            var name = NameTxt.Text;
-            var greeting = service.Greet(name);
-            ResultTxt.Text = greeting;
-
-            
         }
 
         
@@ -47,7 +40,7 @@ namespace SaintSender.DesktopUI
             {
                 client.Connect("imap.gmail.com", 993, true);
 
-                client.Authenticate("ionionescu2020demo@gmail.com", "***");
+                client.Authenticate("ionionescu2020demo@gmail.com", "demoaccountpassword");
 
                 // The Inbox folder is always available on all IMAP servers...
                 var inbox = client.Inbox;
@@ -67,17 +60,26 @@ namespace SaintSender.DesktopUI
                 //        Console.WriteLine("The message has not been read.");
                 //}
 
-                for (int i = 0; i < inbox.Count; i++)
+                for (int i = inbox.Count-1; i >= inbox.Count-20; i--)
                 {
                     var message = inbox.GetMessage(i);
-                    Console.WriteLine($"From: {message.From} - Subject: {message.Subject} x: {items[i].Flags.Value}");
+                    Console.WriteLine($"From: {message.From} - Subject: {message.Subject} Date:{message.Date} x: {items[i].Flags.Value}");
+                    EmailsForDisplay.Add(new Email()
+                    {
+                        Read = items[i].Flags.Value.ToString(),
+                        From = message.From.ToString(),
+                        DateReceived = message.Date.DateTime,
+                        Subject = message.Subject.ToString(),
+                        Message = message.Body.ToString(),
+                        UniqueID = message.MessageId.ToString()
+                    });
                 }
 
-                Console.WriteLine("*************************************");
-                
-
                 client.Disconnect(true);
+                
+                emailSource.ItemsSource = EmailsForDisplay;
             }
+
         }
 
         

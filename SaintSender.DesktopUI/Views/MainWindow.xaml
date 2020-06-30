@@ -3,12 +3,136 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+         TextElement.FontWeight="Regular"
+         TextElement.FontSize="13"
+         TextOptions.TextFormattingMode="Ideal"
+         TextOptions.TextRenderingMode="Auto"
+         Background="{DynamicResource MaterialDesignPaper}"
+         FontFamily="{DynamicResource MaterialDesignFont}"
         xmlns:local="clr-namespace:SaintSender.DesktopUI"
         mc:Ignorable="d"
-        Title="SainSender" Height="450" Width="800" Loaded="Window_Loaded">
+        Title="SainSender" Height="450" Width="1200" Loaded="Window_Loaded">
     <Grid>
-        <TextBox Name="NameTxt" HorizontalAlignment="Left" Height="23" Margin="10,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
-        <Button Name="GreetBtn" Content="Greet" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="140,13,0,0" Click="GreetBtn_Click"/>
-        <TextBlock Name="ResultTxt" HorizontalAlignment="Left" Margin="10,45,0,0" FontSize="28" TextWrapping="Wrap" Text="" VerticalAlignment="Top"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="5" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="5" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="5" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="5" />
+        </Grid.RowDefinitions>
+        <Grid Grid.Column="1"
+              Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+            <Button Grid.Column="0"
+                    Grid.Row="0"
+                    Content="Compose"
+                    Margin="3, 0, 3, 0">
+            </Button>
+        </Grid>
+        <Grid Grid.Column="2"
+              Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+            <Button Grid.Column="0"
+                    Grid.Row="0"
+                    Content="Backup"
+                    Margin="3, 0, 3, 0">
+            </Button>
+            <Button Grid.Column="1"
+                    Grid.Row="0"
+                    Content="Load Backup"
+                    Margin="3, 0, 3, 0">
+            </Button>
+        </Grid>
+        <Grid Grid.Column="3"
+              Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+            <TextBox Grid.Column="0"
+                       Grid.Row="0"
+                       FontSize="18"
+                       Foreground="LightGray"
+                     Margin="3, 0, 3, 0">Search emails
+            </TextBox>
+            <Button Grid.Column="1"
+                    Grid.Row="0"
+                    Content="Search"
+                    Margin="3, 0, 3, 0">
+            </Button>
+        </Grid>
+        <ListView Grid.Column="1"
+                  Grid.Row="2"
+                  Grid.ColumnSpan="3"
+                  Grid.RowSpan="2"
+                  x:Name="emailSource"
+                  >
+            <ListView.View>
+                <GridView AllowsColumnReorder="true">
+                    <GridViewColumn Width="80"
+                                    DisplayMemberBinding="{Binding Read}">
+                        <GridViewColumnHeader>
+                            Read
+                            <GridViewColumnHeader.ContextMenu>
+                                <ContextMenu />
+                            </GridViewColumnHeader.ContextMenu>
+                        </GridViewColumnHeader>
+                    </GridViewColumn>
+                    <GridViewColumn Width="Auto"
+                                    DisplayMemberBinding="{Binding From}">
+                        <GridViewColumnHeader>
+                            From
+                            <GridViewColumnHeader.ContextMenu>
+                                <ContextMenu />
+                            </GridViewColumnHeader.ContextMenu>
+                        </GridViewColumnHeader>
+                    </GridViewColumn>
+                    <GridViewColumn Width="Auto"
+                                    DisplayMemberBinding="{Binding Subject}">
+                        <GridViewColumnHeader>
+                            Subject
+                            <GridViewColumnHeader.ContextMenu>
+                                <ContextMenu />
+                            </GridViewColumnHeader.ContextMenu>
+                        </GridViewColumnHeader>
+                    </GridViewColumn>
+                    <GridViewColumn Width="Auto"
+                                    DisplayMemberBinding="{Binding DateReceived}">
+                        <GridViewColumnHeader>
+                            Date
+                            <GridViewColumnHeader.ContextMenu>
+                                <ContextMenu />
+                            </GridViewColumnHeader.ContextMenu>
+                        </GridViewColumnHeader>
+                    </GridViewColumn>
+                    
+                    
+                    
+                </GridView>
+            </ListView.View>
+        </ListView>
     </Grid>
 </Window>
