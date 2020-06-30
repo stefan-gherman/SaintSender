@@ -13,7 +13,10 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using SaintSender.Core.Services;
-using ActiveUp.Net.Mail;
+using MailKit.Net.Imap;
+using MailKit.Search;
+using MailKit;
+using MimeKit;
 
 namespace SaintSender.DesktopUI
 {
@@ -40,35 +43,42 @@ namespace SaintSender.DesktopUI
         
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            var emailList = getEmailsAsync();
-            foreach (Message email in emailList)
+            using (var client = new ImapClient())
             {
-                Console.WriteLine($"From: {email.From}, Subject: {email.Subject}");
-                //Console.WriteLine("<p>{0}: {1}</p><p>{2}</p>", email.From, email.Subject, email.BodyHtml.Text);
-                //if (email.Attachments.Count > 0)
-                //{
-                //    foreach (MimePart attachment in email.Attachments)
-                //    {
-                //        Console.WriteLine("<p>Attachment: {0} {1}</p>", attachment.ContentName, attachment.ContentType.MimeType);
+                client.Connect("imap.gmail.com", 993, true);
 
-                //    }
-                //}
+                client.Authenticate("ionionescu2020demo@gmail.com", "***");
+
+                // The Inbox folder is always available on all IMAP servers...
+                var inbox = client.Inbox;
+                inbox.Open(FolderAccess.ReadWrite);
+
+                Console.WriteLine("Total messages: {0}", inbox.Count);
+                Console.WriteLine("Recent messages: {0}", inbox.Recent);
+
+                for (int i = 0; i < inbox.Count; i++)
+                {
+                    var message = inbox.GetMessage(i);
+                    Console.WriteLine($"From: {message.From} - Subject: {message.Subject} x: ");
+                }
+
+                Console.WriteLine("*************************************");
+                var uids = client.Inbox.Search(SearchQuery.All);
+                var items = client.Inbox.Fetch(uids, MessageSummaryItems.Flags);
+                foreach (var item in items)
+                {
+                    Console.WriteLine("Message # {0} has flags: {1}", item.Index, item.Flags.Value);
+                    if (item.Flags.Value.HasFlag(MessageFlags.Seen))
+                        Console.WriteLine("The message has been read.");
+                    else
+                        Console.WriteLine("The message has not been read.");
+                }
+
+                client.Disconnect(true);
             }
         }
 
-        public IEnumerable<Message> getEmailsAsync()
-        {
-            var mailRepository = new MailRepository(
-                            "imap.gmail.com",
-                            993,
-                            true,
-                            "ionionescu2020demo@gmail.com",
-                            "demoaccountpassword"
-                        );
-
-            var emailList = mailRepository.GetAllMails("inbox");
-            return emailList;
-        }
+        
     }
 
 }
