@@ -34,5 +34,10 @@ namespace SaintSender.DesktopUI.ViewModels
         {
             this.Close();
         }
+
+        private void SignInClick(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
