@@ -98,6 +98,32 @@ namespace SaintSender.DesktopUI
                 SearchBox.Text = "Search email";
             }
         }
+
+       
+
+        private void SearchButton_Click(object sender, RoutedEventArgs e)
+        {
+            string searchTerm = SearchBox.Text;
+            ObservableCollection<Email> searchResultsEmails = new ObservableCollection<Email>();
+            foreach (var email in EmailsForDisplay)
+            {
+                if (email.From.Contains(searchTerm) || email.Subject.Contains(searchTerm) || email.Message.Contains(searchTerm))
+                {
+                    searchResultsEmails.Add(email);
+                }
+            }
+            if (searchResultsEmails.Count() == 0)
+            {
+                MessageBox.Show("Sorry, no emails matched your search criteria. \n Displaying the regular inbox messages.");
+                Console.WriteLine("Displaying regular inbox");
+            }
+            else
+            {
+                EmailsForDisplay = searchResultsEmails;
+                Console.WriteLine("Displaying search results");
+            }
+            emailSource.ItemsSource = EmailsForDisplay;
+        }
     }
 
 }

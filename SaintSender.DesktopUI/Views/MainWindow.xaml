@@ -78,13 +78,17 @@
                      FontSize="18"
                      Foreground="LightGray"
                      Margin="3, 0, 3, 0" 
-                     MouseEnter="SearchBox_MouseEnter" MouseLeave="SearchBox_MouseLeave" 
+                     MouseEnter="SearchBox_MouseEnter" 
+                     MouseLeave="SearchBox_MouseLeave" 
                      >Search email
             </TextBox>
-            <Button Grid.Column="1"
+            <Button x:Name="SearchButton"  
+                    Grid.Column="1"
                     Grid.Row="0"
                     Content="Search"
-                    Margin="3, 0, 3, 0">
+                    Margin="3, 0, 3, 0" 
+                    Click="SearchButton_Click"
+                    >
             </Button>
         </Grid>
         <ListView Grid.Column="1"
