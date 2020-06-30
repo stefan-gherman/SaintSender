@@ -13,7 +13,7 @@
          FontFamily="{DynamicResource MaterialDesignFont}"
         xmlns:local="clr-namespace:SaintSender.DesktopUI"
         mc:Ignorable="d"
-        Title="SainSender" Height="450" Width="1200" Loaded="Window_Loaded">
+        Title="Saint Sender" Height="450" Width="1200" Loaded="Window_Loaded">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="5" />
@@ -72,11 +72,14 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
-            <TextBox Grid.Column="0"
-                       Grid.Row="0"
-                       FontSize="18"
-                       Foreground="LightGray"
-                     Margin="3, 0, 3, 0">Search emails
+            <TextBox x:Name="SearchBox"
+                     Grid.Column="0"
+                     Grid.Row="0"
+                     FontSize="18"
+                     Foreground="LightGray"
+                     Margin="3, 0, 3, 0" 
+                     MouseEnter="SearchBox_MouseEnter" MouseLeave="SearchBox_MouseLeave" 
+                     >Search email
             </TextBox>
             <Button Grid.Column="1"
                     Grid.Row="0"

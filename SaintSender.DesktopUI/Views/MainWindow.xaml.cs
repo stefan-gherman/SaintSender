@@ -82,7 +82,22 @@ namespace SaintSender.DesktopUI
 
         }
 
-        
+        private void SearchBox_MouseEnter(object sender, MouseEventArgs e)
+        {
+            if (SearchBox.Text.Equals("Search email"))
+            {
+                SearchBox.Text = String.Empty;
+            }
+            
+        }
+
+        private void SearchBox_MouseLeave(object sender, MouseEventArgs e)
+        {
+            if (SearchBox.Text.Equals(""))
+            {
+                SearchBox.Text = "Search email";
+            }
+        }
     }
 
 }
