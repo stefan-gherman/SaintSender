@@ -23,5 +23,16 @@ namespace SaintSender.DesktopUI.ViewModels
         {
             InitializeComponent();
         }
+
+
+        /// <summary>
+        /// Close login window when clicking Close button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CloseLoginWindow(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
     }
 }

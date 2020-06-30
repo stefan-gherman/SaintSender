@@ -34,29 +34,33 @@
         <!--  Login text  -->
         <TextBlock
             Grid.Row="1"
-            Grid.Column="2"
+            Grid.Column="1"
+            Grid.ColumnSpan="3"
+            Width="186"
+            Height="91"
+            Margin="73,37,73.667,41"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
-            FontSize="45"
+            FontSize="76"
             Text="Login" />
 
-        <!--  Username  -->
+        <!--  Email input  -->
 
         <TextBox
             Grid.Row="2"
             Grid.Column="1"
             Grid.ColumnSpan="3"
             Margin="35,38,35,98"
-            FontSize="17"
+            FontSize="16"
             Text="example@gmail.com" />
 
-        <!--  Password  -->
+        <!--  Password input  -->
         <PasswordBox
             Grid.Row="2"
             Grid.Column="1"
             Grid.ColumnSpan="3"
             Margin="30,115,35,22"
-            FontSize="17" />
+            FontSize="16" />
 
         <!--  Sign in button  -->
         <Button
@@ -69,11 +73,13 @@
 
         <!--  Close button  -->
         <Button
+            x:Name="loseLogin"
             Grid.Row="3"
             Grid.Column="2"
             Grid.ColumnSpan="2"
             Height="Auto"
             Margin="75,62,52,68"
+            Click="CloseLoginWindow"
             Content="Close" />
     </Grid>
 </Window>
