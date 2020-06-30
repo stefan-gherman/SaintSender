@@ -33,5 +33,7 @@ namespace SaintSender.DesktopUI.Views
             ReadMessage.Text = selectedEmail.Message;
 
         }
+
+        
     }
 }

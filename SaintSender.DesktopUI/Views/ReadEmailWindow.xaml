@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SaintSender.DesktopUI.Views"
+        
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
          TextElement.Foreground="{DynamicResource MaterialDesignBody}"
          TextElement.FontWeight="Regular"
@@ -12,8 +13,10 @@
          TextOptions.TextRenderingMode="Auto"
          Background="{DynamicResource MaterialDesignPaper}"
          FontFamily="{DynamicResource MaterialDesignFont}"
+        
         mc:Ignorable="d"
-        Title="ReadEmailWindow" Height="450" Width="800">
+        Title="Message" Height="550" Width="800">
+    
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="5" />
@@ -28,30 +31,37 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="5" />
         </Grid.RowDefinitions>
-        <TextBlock Grid.Column="1"
+        <TextBox Grid.Column="1"
                    Grid.Row="1"
                    x:Name="ReadSubject"
                    Margin="5"
                    >
-        </TextBlock>
-        <TextBlock Grid.Column="1"
+        </TextBox>
+        <TextBox Grid.Column="1"
                    Grid.Row="2"
                    x:Name="ReadFrom"
                    Margin="5"
                    >
-        </TextBlock>
-        <TextBlock Grid.Column="1"
+        </TextBox>
+        <TextBox Grid.Column="1"
                    Grid.Row="3"
                    x:Name="ReadDateReceived"
                    Margin="5"
                    >
-        </TextBlock>
+        </TextBox>
         <TextBox Grid.Column="1"
                    Grid.Row="4"
-                   x:Name="ReadMessage"
                    Margin="5"
+                   Height="400"
+                   VerticalScrollBarVisibility="Visible"
+                   x:Name="ReadMessage"
+                   TextWrapping="Wrap"
+                   AcceptsReturn="True"
+                   
                    >
+            
         </TextBox>
+        
         
     </Grid>
 </Window>
