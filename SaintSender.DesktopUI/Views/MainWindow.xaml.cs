@@ -19,6 +19,9 @@ using MailKit;
 using MimeKit;
 using System.Collections.ObjectModel;
 using SaintSender.Core.Entities;
+using System.Threading;
+using System.Collections.Concurrent;
+using System.Windows.Threading;
 
 namespace SaintSender.DesktopUI
 {
@@ -30,12 +33,16 @@ namespace SaintSender.DesktopUI
         public ObservableCollection<Email> EmailsForDisplay { get; set; } = new ObservableCollection<Email>();
         public MainWindow()
         {
+            
             InitializeComponent();
+            emailSource.ItemsSource = EmailsForDisplay;
+            
+
         }
 
-        
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
+        public List<Email> PopulateEmailsForDisplay()
+        {      
+            List<Email> tempBag = new List<Email>();
             using (var client = new ImapClient())
             {
                 client.Connect("imap.gmail.com", 993, true);
@@ -51,20 +58,12 @@ namespace SaintSender.DesktopUI
 
                 var uids = client.Inbox.Search(SearchQuery.All);
                 var items = client.Inbox.Fetch(uids, MessageSummaryItems.Flags);
-                //foreach (var item in items)
-                //{
-                //    Console.WriteLine("Message # {0} has flags: {1}", item.Index, item.Flags.Value);
-                //    if (item.Flags.Value.HasFlag(MessageFlags.Seen))
-                //        Console.WriteLine("The message has been read.");
-                //    else
-                //        Console.WriteLine("The message has not been read.");
-                //}
 
-                for (int i = inbox.Count-1; i >= inbox.Count-20; i--)
+                for (int i = inbox.Count - 1; i >= inbox.Count - 20; i--)
                 {
                     var message = inbox.GetMessage(i);
                     Console.WriteLine($"From: {message.From} - Subject: {message.Subject} Date:{message.Date} x: {items[i].Flags.Value}");
-                    EmailsForDisplay.Add(new Email()
+                    tempBag.Add(new Email()
                     {
                         Read = items[i].Flags.Value.ToString(),
                         From = message.From.ToString(),
@@ -74,12 +73,49 @@ namespace SaintSender.DesktopUI
                         UniqueID = message.MessageId.ToString()
                     });
                 }
-
-                client.Disconnect(true);
-                
-                emailSource.ItemsSource = EmailsForDisplay;
+                client.Disconnect(true);           
             }
+            return tempBag;
+        }
 
+        public void AutoRefreshInbox()
+        {
+            while (true)
+            {
+                Thread.Sleep(5000);
+                RefreshInbox();
+            }
+            
+        }
+        public async void RefreshInbox()
+        {
+            emailSource.ItemsSource = EmailsForDisplay;
+            EmailsForDisplay.Clear();
+
+            await Task.Run(() =>
+            {
+                var tempBag = PopulateEmailsForDisplay();
+                Application.Current.Dispatcher.BeginInvoke(
+                      DispatcherPriority.Background,
+                      new Action(() => {
+                          EmailsForDisplay.Clear();
+                      }));
+                foreach (var email in tempBag)
+                {
+                    Application.Current.Dispatcher.BeginInvoke(
+                      DispatcherPriority.Background,
+                      new Action(() => {
+                          EmailsForDisplay.Add(email);
+                      }));
+                }
+            });
+            emailSource.ItemsSource = EmailsForDisplay;
+        }
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {   
+            EmailsForDisplay.Add(new Email() { Read = "Seen", DateReceived = new DateTime(2000, 12, 22), From = "dd", Message = "test", Subject = "test", UniqueID = "testid" });
+            emailSource.ItemsSource = EmailsForDisplay;
+            RefreshInbox();
         }
 
         private void SearchBox_MouseEnter(object sender, MouseEventArgs e)
@@ -103,6 +139,7 @@ namespace SaintSender.DesktopUI
 
         private void SearchButton_Click(object sender, RoutedEventArgs e)
         {
+            ObservableCollection<Email> latestInbox = EmailsForDisplay;
             string searchTerm = SearchBox.Text;
             ObservableCollection<Email> searchResultsEmails = new ObservableCollection<Email>();
             foreach (var email in EmailsForDisplay)
@@ -116,13 +153,15 @@ namespace SaintSender.DesktopUI
             {
                 MessageBox.Show("Sorry, no emails matched your search criteria. \n Displaying the regular inbox messages.");
                 Console.WriteLine("Displaying regular inbox");
+                emailSource.ItemsSource = latestInbox;
+                
             }
             else
             {
-                EmailsForDisplay = searchResultsEmails;
+                emailSource.ItemsSource = searchResultsEmails;
                 Console.WriteLine("Displaying search results");
             }
-            emailSource.ItemsSource = EmailsForDisplay;
+            // emailSource.ItemsSource = EmailsForDisplay;
         }
     }
 
