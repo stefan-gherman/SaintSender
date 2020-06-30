@@ -53,6 +53,7 @@
             Grid.ColumnSpan="3"
             Margin="35,38,35,98"
             FontSize="16"
+            GotFocus="ClearEmailOnTextBoxClick"
             Text="example@gmail.com" />
 
         <!--  Password input  -->
