@@ -95,13 +95,14 @@
                   Grid.Row="2"
                   Grid.ColumnSpan="3"
                   Grid.RowSpan="2"
-                  x:Name="emailSource"
+                  x:Name="emailSource" 
+                  MouseDoubleClick="emailSource_MouseDoubleClick" 
                   >
             <ListView.View>
                 <GridView AllowsColumnReorder="true">
                     <GridViewColumn Width="80"
                                     DisplayMemberBinding="{Binding Read}">
-                        <GridViewColumnHeader>
+                        <GridViewColumnHeader >
                             Read
                             <GridViewColumnHeader.ContextMenu>
                                 <ContextMenu />
@@ -135,9 +136,6 @@
                             </GridViewColumnHeader.ContextMenu>
                         </GridViewColumnHeader>
                     </GridViewColumn>
-                    
-                    
-                    
                 </GridView>
             </ListView.View>
         </ListView>

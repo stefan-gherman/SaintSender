@@ -22,6 +22,7 @@ using SaintSender.Core.Entities;
 using System.Threading;
 using System.Collections.Concurrent;
 using System.Windows.Threading;
+using SaintSender.DesktopUI.Views;
 
 namespace SaintSender.DesktopUI
 {
@@ -162,6 +163,27 @@ namespace SaintSender.DesktopUI
                 Console.WriteLine("Displaying search results");
             }
             // emailSource.ItemsSource = EmailsForDisplay;
+        }
+
+        private void GridViewColumnHeader_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("single click");
+        }
+
+       
+        private void emailSource_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            try
+            {
+                Email selectedEmail = (Email)emailSource.SelectedItems[0];
+                ReadEmailWindow readEmailWindow = new ReadEmailWindow(selectedEmail);
+                readEmailWindow.Show();
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
     }
 
