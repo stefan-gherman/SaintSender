@@ -61,7 +61,7 @@
             <Button Grid.Column="1"
                     Grid.Row="0"
                     Content="Inbox"
-                    Margin="3, 0, 3, 0" Click="Button_Click_1">
+                    Margin="3, 0, 3, 0" Click="Inbox_Button_Click">
             </Button>
         </Grid>
         <Grid Grid.Column="3"
