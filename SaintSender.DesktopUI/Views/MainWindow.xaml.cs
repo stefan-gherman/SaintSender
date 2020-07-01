@@ -28,6 +28,8 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.IO;
 using SaintSender.Core.Interfaces;
+using System.Linq.Expressions;
+using System.Text.RegularExpressions;
 
 namespace SaintSender.DesktopUI
 {
@@ -36,7 +38,7 @@ namespace SaintSender.DesktopUI
     /// </summary>
     public partial class MainWindow : Window
     {
-        private UserData userData;
+        private readonly UserData userData;
         public ObservableCollection<Email> EmailsForDisplay { get; set; } = new ObservableCollection<Email>();
         public IWebConnectionService connectionChecker = new ConnectionService();
         public string SystemMessageBackend { get; set; }
@@ -124,8 +126,8 @@ namespace SaintSender.DesktopUI
                 Thread.Sleep(5000);
                 RefreshInbox();
             }
-
         }
+
         public async void RefreshInbox()
         {
             emailSource.ItemsSource = EmailsForDisplay;
@@ -134,12 +136,12 @@ namespace SaintSender.DesktopUI
             await Task.Run(() =>
             {
                 var tempBag = PopulateEmailsForDisplay();
-                Application.Current.Dispatcher.BeginInvoke(
-                      DispatcherPriority.Background,
-                      new Action(() =>
-                      {
-                          EmailsForDisplay.Clear();
-                      }));
+                //Application.Current.Dispatcher.BeginInvoke(
+                //      DispatcherPriority.Background,
+                //      new Action(() =>
+                //      {
+                //          EmailsForDisplay.Clear();
+                //      }));
                 foreach (var email in tempBag)
                 {
                     Application.Current.Dispatcher.BeginInvoke(
@@ -154,8 +156,6 @@ namespace SaintSender.DesktopUI
         }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            EmailsForDisplay.Add(new Email() { Read = "Seen", DateReceived = new DateTime(2000, 12, 22), From = "dd", Message = "test", Subject = "test", UniqueID = "testid" });
-            emailSource.ItemsSource = EmailsForDisplay;
             RefreshInbox();
             //DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
             //dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
@@ -184,35 +184,6 @@ namespace SaintSender.DesktopUI
             {
                 SearchBox.Text = "Search email";
             }
-        }
-
-
-
-        private void SearchButton_Click(object sender, RoutedEventArgs e)
-        {
-            ObservableCollection<Email> latestInbox = EmailsForDisplay;
-            string searchTerm = SearchBox.Text;
-            ObservableCollection<Email> searchResultsEmails = new ObservableCollection<Email>();
-            foreach (var email in EmailsForDisplay)
-            {
-                if (email.From.Contains(searchTerm) || email.Subject.Contains(searchTerm) || email.Message.Contains(searchTerm))
-                {
-                    searchResultsEmails.Add(email);
-                }
-            }
-            if (searchResultsEmails.Count() == 0)
-            {
-                MessageBox.Show("Sorry, no emails matched your search criteria. \n Displaying the regular inbox messages.");
-                Console.WriteLine("Displaying regular inbox");
-                emailSource.ItemsSource = latestInbox;
-
-            }
-            else
-            {
-                emailSource.ItemsSource = searchResultsEmails;
-                Console.WriteLine("Displaying search results");
-            }
-            // emailSource.ItemsSource = EmailsForDisplay;
         }
 
         private void GridViewColumnHeader_Click(object sender, RoutedEventArgs e)
@@ -316,37 +287,70 @@ namespace SaintSender.DesktopUI
             return lastBackUp;
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private void ComposeMessage_Click(object sender, RoutedEventArgs e)
         {
-            RefreshInbox();
+            ComposeMessage composeMessageWindow = new ComposeMessage();
+            composeMessageWindow.Show();
+        }
+        
+        private void SearchBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                executeSearch();
+            }
         }
 
         private void PackIcon_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            ObservableCollection<Email> latestInbox = EmailsForDisplay;
-            string searchTerm = SearchBox.Text;
-            ObservableCollection<Email> searchResultsEmails = new ObservableCollection<Email>();
-            foreach (var email in EmailsForDisplay)
+            executeSearch();
+        }
+
+        private void executeSearch()
+        {
+            string searchString = SearchBox.Text;
+            ObservableCollection<Email> searchResults = new ObservableCollection<Email>();
+            string pattern = searchString;
+
+            foreach (Email email in EmailsForDisplay)
             {
-                if (email.From.Contains(searchTerm) || email.Subject.Contains(searchTerm) || email.Message.Contains(searchTerm))
+                string emailFrom = " ";
+                if (email.From != null)
                 {
-                    searchResultsEmails.Add(email);
+                    emailFrom = email.From;
+                }
+                string emailSubject = " ";
+                if (email.Subject != null)
+                {
+                    emailSubject = email.Subject;
+                }
+                string emailMessage = " ";
+                if (email.Message != null)
+                {
+                    emailMessage = email.Message;
+                }
+
+                bool matchFrom = Regex.IsMatch(emailFrom, pattern, RegexOptions.IgnoreCase);
+                bool matchSubject = Regex.IsMatch(emailSubject, pattern, RegexOptions.IgnoreCase);
+                bool matchMessage = Regex.IsMatch(emailMessage, pattern, RegexOptions.IgnoreCase);
+
+                if (matchFrom || matchSubject || matchMessage)
+                {
+                    searchResults.Add(email);
                 }
             }
-            if (searchResultsEmails.Count() == 0)
+            if (searchResults.Count() > 0)
             {
-                MessageBox.Show("Sorry, no emails matched your search criteria. \n Displaying the regular inbox messages.");
-                Console.WriteLine("Displaying regular inbox");
-                emailSource.ItemsSource = latestInbox;
-
+                SystemMessage.Content = $"Displaying search results for: {searchString} ({searchResults.Count} results)";
+                emailSource.ItemsSource = searchResults;
             }
             else
             {
-                emailSource.ItemsSource = searchResultsEmails;
-                Console.WriteLine("Displaying search results");
+                SystemMessage.Content = $"No search matches for {searchString}. Displaying regular inbox.";
+                emailSource.ItemsSource = EmailsForDisplay;
             }
-            // emailSource.ItemsSource = EmailsForDisplay;
         }
+
         private void EmailStatusChange(int mailIndex, MessageFlags flag)
         {
             using (var client = new ImapClient())
@@ -362,5 +366,11 @@ namespace SaintSender.DesktopUI
             RefreshInbox();
 
         }
+
+        private void Inbox_Button_Click(object sender, RoutedEventArgs e)
+        {
+            RefreshInbox();
+        }
+
     }
 }
