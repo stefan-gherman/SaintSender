@@ -36,5 +36,35 @@ namespace SaintSender.DesktopUI.ViewModels
         {
             this.Close();
         }
+
+        /// <summary>
+        /// Clear email text box
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ClearDefaultEmail_Click(object sender, RoutedEventArgs e)
+        {
+            SendTo.Text = "";
+        }
+
+        /// <summary>
+        /// Clear subject text box
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ClearDefaultSubject_Click(object sender, RoutedEventArgs e)
+        {
+            SendSubject.Text = "";
+        }
+
+        /// <summary>
+        /// Clear message text box
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param> 
+        private void ClearDefaultMessage_Click(object sender, RoutedEventArgs e)
+        {
+            SendMessage.Text = "";
+        }
     }
 }
