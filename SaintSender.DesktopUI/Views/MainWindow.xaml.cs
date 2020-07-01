@@ -212,6 +212,8 @@ namespace SaintSender.DesktopUI
                 using (StreamWriter writer = File.CreateText(fileName))
                 {
                     writer.WriteLine("Test");
+                    var jsonString = JsonSerializer.Serialize(EmailsForDisplay, new JsonSerializerOptions() { WriteIndented = true});
+                    writer.WriteLine(jsonString );
                 }
 
             }
