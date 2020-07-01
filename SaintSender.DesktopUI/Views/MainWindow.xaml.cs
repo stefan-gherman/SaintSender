@@ -291,9 +291,7 @@ namespace SaintSender.DesktopUI
         {
             string searchString = SearchBox.Text;
             ObservableCollection<Email> searchResults = new ObservableCollection<Email>();
-            var pattern = @"(?<!\w)" + searchString + @"(?=\w)";
-
-            Regex regexExpression = new Regex(pattern);
+            string pattern = searchString;
 
             foreach (Email email in EmailsForDisplay)
             {
@@ -313,18 +311,18 @@ namespace SaintSender.DesktopUI
                     emailMessage = email.Message;
                 }
 
-                Match matchFrom = regexExpression.Match(emailFrom);
-                Match matchSubject = regexExpression.Match(emailSubject);
-                Match matchBody = regexExpression.Match(emailMessage);
+                bool matchFrom = Regex.IsMatch(emailFrom, pattern, RegexOptions.IgnoreCase);
+                bool matchSubject = Regex.IsMatch(emailSubject, pattern, RegexOptions.IgnoreCase);
+                bool matchMessage = Regex.IsMatch(emailMessage, pattern, RegexOptions.IgnoreCase);
 
-                if (matchFrom.Success || matchSubject.Success || matchBody.Success)
+                if (matchFrom || matchSubject || matchMessage)
                 {
                     searchResults.Add(email);
                 }
             }
             if (searchResults.Count() > 0)
             {
-                SystemMessage.Content = $"Displaying search results for: {searchString}";
+                SystemMessage.Content = $"Displaying search results for: {searchString} ({searchResults.Count} results)";
                 emailSource.ItemsSource = searchResults;
             }
             else
