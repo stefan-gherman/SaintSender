@@ -1,17 +1,7 @@
 ﻿using SaintSender.Core.Entities;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace SaintSender.DesktopUI.ViewModels
 {
@@ -20,8 +10,6 @@ namespace SaintSender.DesktopUI.ViewModels
     /// </summary>
     public partial class ComposeMessage : Window
     {
-        
-
         public ComposeMessage()
         {
             InitializeComponent();
@@ -40,24 +28,89 @@ namespace SaintSender.DesktopUI.ViewModels
                 case MessageBoxResult.Yes:
                     Close();
                     break;
+
                 case MessageBoxResult.No:
                     break;
             }
         }
 
-        private void SendMessage_Click(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Send email when button is pressed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SendEmail_Click(object sender, RoutedEventArgs e)
         {
-            SendMessage message = new SendMessage()
+            SendMessage sendMessageObject = new SendMessage()
             {
                 To = SendTo.Text,
                 Subject = SendSubject.Text,
                 Message = SendMessage.Text
             };
-
-            message.SendMessageToEmail();
+            sendMessageObject.SendMessageToEmail();
             Close();
-
-            
         }
+
+        #region Clear default email text box on hover
+
+        private void SendTo_Enter(object sender, MouseEventArgs e)
+        {
+            if (SendTo.Text.Equals("email@gmail.com")) SendTo.Text = String.Empty;
+        }
+
+        private void SendTo_Leave(object sender, MouseEventArgs e)
+        {
+            if (SendTo.Text.Equals("")) SendTo.Text = "email@gmail.com";
+        }
+
+        #endregion Clear default email text box on hover
+
+        #region Clear default subject text box on hover
+
+        /// <summary>
+        /// If text box has default email then clear it
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SendSubject_Enter(object sender, MouseEventArgs e)
+        {
+            if (SendSubject.Text.Equals("Subject")) SendSubject.Text = "";
+        }
+
+        /// <summary>
+        /// If text box is empty then write default subject text
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SendSubject_Leave(object sender, MouseEventArgs e)
+        {
+            if (SendSubject.Text.Equals("")) SendSubject.Text = "Subject";
+        }
+
+        #endregion Clear default subject text box on hover
+
+        #region Clear default message text box on hover
+
+        /// <summary>
+        /// If message box has default message then clear it
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SendMessage_Enter(object sender, MouseEventArgs e)
+        {
+            if (SendMessage.Text.Equals("Write your message.")) SendMessage.Text = "";
+        }
+
+        /// <summary>
+        /// If message box is empty then write default message text
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SendMessage_Leave(object sender, MouseEventArgs e)
+        {
+            if (SendMessage.Text.Equals("")) SendMessage.Text = "Write your message.";
+        }
+
+        #endregion Clear default message text box on hover
     }
 }

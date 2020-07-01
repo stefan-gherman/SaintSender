@@ -37,6 +37,8 @@
             Grid.Row="1"
             Grid.Column="1"
             Margin="5"
+            MouseEnter="SendTo_Enter"
+            MouseLeave="SendTo_Leave"
             Text="email@gmail.com" />
 
         <!--  Subject textbox  -->
@@ -45,6 +47,8 @@
             Grid.Row="2"
             Grid.Column="1"
             Margin="5"
+            MouseEnter="SendSubject_Enter"
+            MouseLeave="SendSubject_Leave"
             Text="Subject" />
 
         <!--  Message textbox  -->
@@ -55,6 +59,8 @@
             Height="350"
             Margin="5"
             AcceptsReturn="True"
+            MouseEnter="SendMessage_Enter"
+            MouseLeave="SendMessage_Leave"
             Text="Write your message."
             TextWrapping="Wrap"
             VerticalScrollBarVisibility="Visible" />
@@ -64,7 +70,7 @@
             Grid.Row="5"
             Grid.ColumnSpan="2"
             Margin="3,4,2,-30"
-            Click="SendMessage_Click"
+            Click="SendEmail_Click"
             Content="Send" />
 
         <!--  Close button  -->
