@@ -131,6 +131,12 @@ namespace SaintSender.DesktopUI
         public async void RefreshInbox()
         {
             emailSource.ItemsSource = EmailsForDisplay;
+            ObservableCollection<Email> backupEmailsForDisplay = new ObservableCollection<Email>();
+            foreach (Email email in EmailsForDisplay)
+            {
+                backupEmailsForDisplay.Add(email);
+            }
+            emailSource.ItemsSource = backupEmailsForDisplay;
             EmailsForDisplay.Clear();
 
             await Task.Run(() =>
@@ -153,21 +159,23 @@ namespace SaintSender.DesktopUI
                 }
             });
             emailSource.ItemsSource = EmailsForDisplay;
+            backupEmailsForDisplay.Clear();
+            SystemMessage.Content = $"Total displayed messages: {EmailsForDisplay.Count()} and backup {backupEmailsForDisplay.Count()}";
         }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             RefreshInbox();
-            //DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
-            //dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
-            //dispatcherTimer.Interval = new TimeSpan(0, 0, 10);
-            //dispatcherTimer.Start();
+            DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
+            dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 10);
+            dispatcherTimer.Start();
 
         }
 
-        //private void dispatcherTimer_Tick(object sender, EventArgs e)
-        //{
-        //    RefreshInbox();
-        //}
+        private void dispatcherTimer_Tick(object sender, EventArgs e)
+        {
+            RefreshInbox();
+        }
 
         private void SearchBox_MouseEnter(object sender, MouseEventArgs e)
         {
@@ -198,9 +206,22 @@ namespace SaintSender.DesktopUI
             {
                 Email selectedEmail = (Email)emailSource.SelectedItems[0];
                 ReadEmailWindow readEmailWindow = new ReadEmailWindow(selectedEmail);
-                if (selectedEmail.Read.Equals("None"))
-                { EmailStatusChange(selectedEmail.Index, MessageFlags.Seen); }
                 readEmailWindow.Show();
+                //Parallel.ForEach(EmailsForDisplay, (email) =>
+                //{
+                //    if (email.UniqueID.Equals(selectedEmail.UniqueID))
+                //    {
+                //        email.Read = "Seen";
+                //    }
+                //});
+                //selectedEmail.Read = "Seen";
+                //EmailStatusChange(selectedEmail.Index, MessageFlags.Seen);
+                if (selectedEmail.Read.Equals("None"))
+                {
+                    selectedEmail.Read = "Seen";
+                    EmailStatusChange(selectedEmail.Index, MessageFlags.Seen); 
+                }
+
 
             }
             catch (Exception ex)
@@ -360,10 +381,10 @@ namespace SaintSender.DesktopUI
                 var inbox = client.Inbox;
                 inbox.Open(FolderAccess.ReadWrite);
                 
-                inbox.AddFlags(mailIndex, flag, false);
+                inbox.AddFlagsAsync(mailIndex, flag, false);
                 client.Disconnect(true);
             }
-            RefreshInbox();
+            //RefreshInbox();
 
         }
 
