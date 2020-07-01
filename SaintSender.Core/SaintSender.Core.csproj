@@ -93,6 +93,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Entities\Email.cs" />
+    <Compile Include="Entities\SendMessage.cs" />
     <Compile Include="Entities\UserData.cs" />
     <Compile Include="Interfaces\IWebConnectionService.cs" />
     <Compile Include="Services\ConnectionService.cs" />
@@ -110,7 +111,7 @@
     <None Include="Services\ReadMe.md" />
   </ItemGroup>
   <ItemGroup>
-<!--     <WCFMetadata Include="Connected Services\" /> -->
+    <!--     <WCFMetadata Include="Connected Services\" /> -->
     <COMReference Include="NETWORKLIST">
       <Guid>{DCB00D01-570F-4A9B-8D69-199FDBA5723B}</Guid>
       <VersionMajor>1</VersionMajor>

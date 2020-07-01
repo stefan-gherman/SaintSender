@@ -36,7 +36,7 @@ namespace SaintSender.DesktopUI
     /// </summary>
     public partial class MainWindow : Window
     {
-        private UserData userData;
+        private readonly UserData userData;
         public ObservableCollection<Email> EmailsForDisplay { get; set; } = new ObservableCollection<Email>();
         public IWebConnectionService connectionChecker = new ConnectionService();
         public string SystemMessageBackend { get; set; }
@@ -301,6 +301,12 @@ namespace SaintSender.DesktopUI
             string filePath = $@".\{directoryPath}\{filename}";
             DateTime lastBackUp = File.GetLastWriteTime(filePath);
             return lastBackUp;
+        }
+
+        private void ComposeMessage_Click(object sender, RoutedEventArgs e)
+        {
+            ComposeMessage composeMessageWindow = new ComposeMessage();
+            composeMessageWindow.Show();
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
