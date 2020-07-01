@@ -274,11 +274,24 @@ namespace SaintSender.DesktopUI
             return lastBackUp;
         }
 
+        private void SearchBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                executeSearch();
+            }
+        }
+
         private void PackIcon_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            executeSearch();
+        }
+
+        private void executeSearch()
         {
             string searchString = SearchBox.Text;
             ObservableCollection<Email> searchResults = new ObservableCollection<Email>();
-            var pattern = @"(?<!\w)" + Regex.Escape(searchString) + @"(?=\w)";
+            var pattern = @"(?<!\w)" + searchString + @"(?=\w)";
 
             Regex regexExpression = new Regex(pattern);
 
@@ -287,7 +300,7 @@ namespace SaintSender.DesktopUI
                 string emailFrom = " ";
                 if (email.From != null)
                 {
-                     emailFrom = email.From;
+                    emailFrom = email.From;
                 }
                 string emailSubject = " ";
                 if (email.Subject != null)
@@ -303,7 +316,7 @@ namespace SaintSender.DesktopUI
                 Match matchFrom = regexExpression.Match(emailFrom);
                 Match matchSubject = regexExpression.Match(emailSubject);
                 Match matchBody = regexExpression.Match(emailMessage);
-                
+
                 if (matchFrom.Success || matchSubject.Success || matchBody.Success)
                 {
                     searchResults.Add(email);
@@ -319,12 +332,13 @@ namespace SaintSender.DesktopUI
                 SystemMessage.Content = $"No search matches for {searchString}. Displaying regular inbox.";
                 emailSource.ItemsSource = EmailsForDisplay;
             }
-
         }
 
         private void Inbox_Button_Click(object sender, RoutedEventArgs e)
         {
             RefreshInbox();
         }
+
+       
     }
 }
