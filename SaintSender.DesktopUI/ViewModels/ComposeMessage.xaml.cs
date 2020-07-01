@@ -23,5 +23,10 @@ namespace SaintSender.DesktopUI.ViewModels
         {
             InitializeComponent();
         }
+
+        private void CloseComposeMesssageWindow_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
     }
 }

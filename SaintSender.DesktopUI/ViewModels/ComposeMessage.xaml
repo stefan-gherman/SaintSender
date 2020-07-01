@@ -62,6 +62,7 @@
             Grid.Row="5"
             Grid.ColumnSpan="2"
             Margin="3,4,2,-30"
+            Click="CloseComposeMesssageWindow_Click"
             Content="Send" />
     </Grid>
 </Window>
