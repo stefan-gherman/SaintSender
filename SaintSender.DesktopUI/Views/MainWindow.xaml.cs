@@ -219,11 +219,11 @@ namespace SaintSender.DesktopUI
                 {
 
                     var jsonString = JsonSerializer.Serialize(EmailsForDisplay, new JsonSerializerOptions() { WriteIndented = true });
-                    writer.WriteLine(jsonString);
+                    writer.WriteLine(Eramake.eCryptography.Encrypt(jsonString));
                 }
 
                 //string fs = File.ReadAllText(filePath);
-                //testDeserialize = JsonSerializer.Deserialize<List<Email>>(fs);
+                //testDeserialize = JsonSerializer.Deserialize<List<Email>>(Eramake.eCryptography.Decrypt(fs));
 
                 //foreach (var email in testDeserialize)
                 //{
