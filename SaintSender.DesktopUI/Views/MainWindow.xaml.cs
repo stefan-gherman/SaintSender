@@ -322,7 +322,7 @@ namespace SaintSender.DesktopUI
             }
         }
 
-        private void PackIcon_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void Search_Button_Click(object sender, RoutedEventArgs e)
         {
             executeSearch();
         }
@@ -396,5 +396,6 @@ namespace SaintSender.DesktopUI
             RefreshAllowed = true;
         }
 
+        
     }
 }
