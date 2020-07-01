@@ -65,7 +65,7 @@
             <Button Grid.Column="1"
                     Grid.Row="0"
                     Content="Inbox"
-                    Margin="3, 0, 3, 0" Click="Button_Click_1">
+                    Margin="3, 0, 3, 0" Click="Inbox_Button_Click">
             </Button>
         </Grid>
         <Grid Grid.Row="1" Grid.Column="3">
@@ -92,7 +92,7 @@
                          Foreground="LightGray"
                          Margin="3, 0, 3, 0" 
                          MouseEnter="SearchBox_MouseEnter" 
-                         MouseLeave="SearchBox_MouseLeave" 
+                         MouseLeave="SearchBox_MouseLeave" KeyDown="SearchBox_KeyDown" 
                          >Search email
                 </TextBox>
             <materialDesign:PackIcon
@@ -112,6 +112,7 @@
                  Grid.ColumnSpan="3"
                  HorizontalAlignment="Center"
                  Margin="5"
+                 Foreground="LightGray"
                  x:Name="SystemMessage"></Label>
         <ListView Grid.Column="1"
                   Grid.Row="3"
