@@ -118,6 +118,16 @@
                   x:Name="emailSource" 
                   MouseDoubleClick="emailSource_MouseDoubleClick" 
                   >
+            <ListView.ItemContainerStyle>
+                <Style TargetType="{x:Type ListBoxItem}">
+                    <Style.Triggers>
+                       
+                        <DataTrigger Binding="{Binding Read}" Value="None">
+                            <Setter Property="FontWeight" Value="Bold" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ListView.ItemContainerStyle>
             <ListView.View>
                 <GridView AllowsColumnReorder="true">
                     <GridViewColumn Width="80"
