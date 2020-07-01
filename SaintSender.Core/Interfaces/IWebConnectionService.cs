@@ -10,5 +10,6 @@ namespace SaintSender.Core.Interfaces
     {
         bool ConnectionCheck(string url);
         bool PingChek(string url);
+        bool NLMAPICheck();
     }
 }
