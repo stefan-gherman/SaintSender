@@ -15,6 +15,7 @@ namespace SaintSender.Core.Entities
         public string Subject { get; set; }
         public string Message { get; set; }
         public string UniqueID { get; set; }
+        public int Index { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
     }
