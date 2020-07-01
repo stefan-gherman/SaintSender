@@ -34,7 +34,7 @@ namespace SaintSender.DesktopUI.ViewModels
         /// <param name="e"></param>
         private void CloseComposeMesssageWindow_Click(object sender, RoutedEventArgs e)
         {
-            Close();
+            this.Close();
         }
     }
 }

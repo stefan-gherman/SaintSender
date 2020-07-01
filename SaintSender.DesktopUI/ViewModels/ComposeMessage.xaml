@@ -30,18 +30,24 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="5" />
         </Grid.RowDefinitions>
+
+        <!--  Send To email textbox  -->
         <TextBox
             x:Name="SendTo"
             Grid.Row="1"
             Grid.Column="1"
             Margin="5"
             Text="email@gmail.com" />
+
+        <!--  Subject textbox  -->
         <TextBox
             x:Name="SendSubject"
             Grid.Row="2"
             Grid.Column="1"
             Margin="5"
             Text="Subject" />
+
+        <!--  Message textbox  -->
         <TextBox
             x:Name="SendMessage"
             Grid.Row="4"
@@ -52,17 +58,22 @@
             Text="Write your message."
             TextWrapping="Wrap"
             VerticalScrollBarVisibility="Visible" />
-        <Button
-            Grid.Row="5"
-            Grid.ColumnSpan="2"
-            Margin="3,48,2,-74"
-            Content="Close" />
 
+        <!--  Send button  -->
         <Button
             Grid.Row="5"
             Grid.ColumnSpan="2"
             Margin="3,4,2,-30"
-            Click="CloseComposeMesssageWindow_Click"
             Content="Send" />
+
+        <!--  Close button  -->
+        <Button
+            Grid.Row="5"
+            Grid.ColumnSpan="2"
+            Margin="3,48,2,-74"
+            Click="CloseComposeMesssageWindow_Click"
+            Content="Close" />
+
+
     </Grid>
 </Window>
