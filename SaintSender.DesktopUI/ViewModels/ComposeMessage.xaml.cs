@@ -24,9 +24,6 @@ namespace SaintSender.DesktopUI.ViewModels
             InitializeComponent();
         }
 
-
-
-
         /// <summary>
         /// Close Compose Message window
         /// </summary>
@@ -34,37 +31,18 @@ namespace SaintSender.DesktopUI.ViewModels
         /// <param name="e"></param>
         private void CloseComposeMesssageWindow_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            MessageBoxResult result = MessageBox.Show("Are you sure you want to discard the message ?", "My App", MessageBoxButton.YesNo);
+            switch (result)
+            {
+                case MessageBoxResult.Yes:
+                    Close();
+                    break;
+                case MessageBoxResult.No:
+                    break;
+            }
         }
 
-        /// <summary>
-        /// Clear email text box
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ClearDefaultEmail_Click(object sender, RoutedEventArgs e)
-        {
-            SendTo.Text = "";
-        }
 
-        /// <summary>
-        /// Clear subject text box
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ClearDefaultSubject_Click(object sender, RoutedEventArgs e)
-        {
-            SendSubject.Text = "";
-        }
 
-        /// <summary>
-        /// Clear message text box
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param> 
-        private void ClearDefaultMessage_Click(object sender, RoutedEventArgs e)
-        {
-            SendMessage.Text = "";
-        }
     }
 }

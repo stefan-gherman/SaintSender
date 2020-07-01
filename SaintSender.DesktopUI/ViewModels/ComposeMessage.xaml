@@ -37,7 +37,6 @@
             Grid.Row="1"
             Grid.Column="1"
             Margin="5"
-            GotFocus="ClearDefaultEmail_Click"
             Text="email@gmail.com" />
 
         <!--  Subject textbox  -->
@@ -46,7 +45,6 @@
             Grid.Row="2"
             Grid.Column="1"
             Margin="5"
-            GotFocus="ClearDefaultSubject_Click"
             Text="Subject" />
 
         <!--  Message textbox  -->
@@ -57,7 +55,6 @@
             Height="350"
             Margin="5"
             AcceptsReturn="True"
-            GotFocus="ClearDefaultMessage_Click"
             Text="Write your message."
             TextWrapping="Wrap"
             VerticalScrollBarVisibility="Visible" />
