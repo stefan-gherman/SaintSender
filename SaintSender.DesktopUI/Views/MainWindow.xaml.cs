@@ -19,6 +19,7 @@ using MailKit;
 using MimeKit;
 using System.Collections.ObjectModel;
 using SaintSender.Core.Entities;
+using SaintSender.DesktopUI.ViewModels;
 using System.Threading;
 using System.Collections.Concurrent;
 using System.Windows.Threading;
@@ -35,17 +36,24 @@ namespace SaintSender.DesktopUI
     /// </summary>
     public partial class MainWindow : Window
     {
+        private UserData userData;
         public ObservableCollection<Email> EmailsForDisplay { get; set; } = new ObservableCollection<Email>();
         public IWebConnectionService connectionChecker = new ConnectionService();
-        public MainWindow()
+        
+        public MainWindow(UserData userData)
         {
-
             InitializeComponent();
+            this.userData = userData;
             emailSource.ItemsSource = EmailsForDisplay;
-
-
         }
-
+        
+//         public MainWindow()
+//         {
+//             InitializeComponent();
+//             this.userData = userData;
+//             emailSource.ItemsSource = EmailsForDisplay;
+//         }
+        
         public List<Email> PopulateEmailsForDisplay()
         {
             List<Email> tempBag = new List<Email>();
@@ -71,8 +79,8 @@ namespace SaintSender.DesktopUI
                 using (var client = new ImapClient())
                 {
                     client.Connect("imap.gmail.com", 993, true);
-
-                    client.Authenticate("ionionescu2020demo@gmail.com", "demoaccountpassword");
+                    client.Authenticate(userData.Email, userData.Password);
+                    //client.Authenticate("ionionescu2020demo@gmail.com", "demoaccountpassword");
 
                     // The Inbox folder is always available on all IMAP servers...
                     var inbox = client.Inbox;
@@ -284,6 +292,7 @@ namespace SaintSender.DesktopUI
             return backupList;
         }
 
+
         private DateTime GetBackUpFileLastModified(string folderPath, string filename)
         {
             string directoryPath = folderPath;
@@ -292,6 +301,6 @@ namespace SaintSender.DesktopUI
             return lastBackUp;
         }
             
-    }
 
+    }
 }
