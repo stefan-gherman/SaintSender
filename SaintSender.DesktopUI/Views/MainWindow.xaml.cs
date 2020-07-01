@@ -38,7 +38,7 @@ namespace SaintSender.DesktopUI
     /// </summary>
     public partial class MainWindow : Window
     {
-        private UserData userData;
+        private readonly UserData userData;
         public ObservableCollection<Email> EmailsForDisplay { get; set; } = new ObservableCollection<Email>();
         public IWebConnectionService connectionChecker = new ConnectionService();
         public string SystemMessageBackend { get; set; }
@@ -274,6 +274,12 @@ namespace SaintSender.DesktopUI
             return lastBackUp;
         }
 
+        private void ComposeMessage_Click(object sender, RoutedEventArgs e)
+        {
+            ComposeMessage composeMessageWindow = new ComposeMessage();
+            composeMessageWindow.Show();
+        }
+        
         private void SearchBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
