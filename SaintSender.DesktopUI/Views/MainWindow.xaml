@@ -40,7 +40,8 @@
             <Button Grid.Column="0"
                     Grid.Row="0"
                     Content="Compose"
-                    Margin="3, 0, 3, 0">
+                    Margin="3, 0, 3, 0"
+                    Click="ComposeMessage_Click">
             </Button>
         </Grid>
         <Grid Grid.Column="2"
