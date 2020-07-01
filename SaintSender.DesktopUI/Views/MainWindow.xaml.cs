@@ -35,6 +35,7 @@ namespace SaintSender.DesktopUI
     public partial class MainWindow : Window
     {
         public ObservableCollection<Email> EmailsForDisplay { get; set; } = new ObservableCollection<Email>();
+        public ConnectionService connectionChecker = new ConnectionService();
         public MainWindow()
         {
 
@@ -47,40 +48,58 @@ namespace SaintSender.DesktopUI
         public List<Email> PopulateEmailsForDisplay()
         {
             List<Email> tempBag = new List<Email>();
-            using (var client = new ImapClient())
+            if (!connectionChecker.NLMAPICheck())
             {
-                client.Connect("imap.gmail.com", 993, true);
-
-                client.Authenticate("ionionescu2020demo@gmail.com", "demoaccountpassword");
-
-                // The Inbox folder is always available on all IMAP servers...
-                var inbox = client.Inbox;
-                inbox.Open(FolderAccess.ReadWrite);
-
-                Console.WriteLine("Total messages: {0}", inbox.Count);
-                Console.WriteLine("Recent messages: {0}", inbox.Recent);
-
-                var uids = client.Inbox.Search(SearchQuery.All);
-                var items = client.Inbox.Fetch(uids, MessageSummaryItems.Flags);
-
-
-
-                for (int i = inbox.Count - 1; i >= inbox.Count - 20; i--)
+                MessageBox.Show("There was an error with the connection");
+                tempBag = (List<Email>)DeserializeBackup("Backups", "backup_emails.txt");
+                if(tempBag.Count == 0)
                 {
-                    var message = inbox.GetMessage(i);
-                    Console.WriteLine($"From: {message.From} - Subject: {message.Subject} Date:{message.Date} x: {items[i].Flags.Value}");
-
-                    tempBag.Add(new Email()
-                    {
-                        Read = items[i].Flags.Value.ToString(),
-                        From = message.From.ToString(),
-                        DateReceived = message.Date.DateTime,
-                        Subject = message.Subject.ToString(),
-                        Message = message.TextBody,
-                        UniqueID = message.MessageId.ToString()
-                    });
+                    //SearchBox.Text = "No backup found"; thread error
+                    MessageBox.Show("No suitable backup found!");
+                } 
+                else
+                {
+                    //SearchBox.Text = GetBackUpFileLastModified("Backups", "backup_emails.txt").ToString(); thread error
+                    MessageBox.Show($"Loaded last backup from{GetBackUpFileLastModified("Backups", "backup_emails.txt").ToString()}");
                 }
-                client.Disconnect(true);
+            }
+            else
+            {
+                using (var client = new ImapClient())
+                {
+                    client.Connect("imap.gmail.com", 993, true);
+
+                    client.Authenticate("ionionescu2020demo@gmail.com", "demoaccountpassword");
+
+                    // The Inbox folder is always available on all IMAP servers...
+                    var inbox = client.Inbox;
+                    inbox.Open(FolderAccess.ReadWrite);
+
+                    Console.WriteLine("Total messages: {0}", inbox.Count);
+                    Console.WriteLine("Recent messages: {0}", inbox.Recent);
+
+                    var uids = client.Inbox.Search(SearchQuery.All);
+                    var items = client.Inbox.Fetch(uids, MessageSummaryItems.Flags);
+
+
+
+                    for (int i = inbox.Count - 1; i >= inbox.Count - 20; i--)
+                    {
+                        var message = inbox.GetMessage(i);
+                        Console.WriteLine($"From: {message.From} - Subject: {message.Subject} Date:{message.Date} x: {items[i].Flags.Value}");
+
+                        tempBag.Add(new Email()
+                        {
+                            Read = items[i].Flags.Value.ToString(),
+                            From = message.From.ToString(),
+                            DateReceived = message.Date.DateTime,
+                            Subject = message.Subject.ToString(),
+                            Message = message.TextBody,
+                            UniqueID = message.MessageId.ToString()
+                        });
+                    }
+                    client.Disconnect(true);
+                }
             }
             return tempBag;
         }
@@ -221,7 +240,7 @@ namespace SaintSender.DesktopUI
                     writer.WriteLine(Eramake.eCryptography.Encrypt(jsonString));
                 }
 
-               
+
 
             }
             catch (Exception ex)
@@ -232,20 +251,20 @@ namespace SaintSender.DesktopUI
 
         private IEnumerable<Email> DeserializeBackup(string folderPath, string filename)
         {
-            IEnumerable <Email> backupList = new List<Email>();
+            IEnumerable<Email> backupList = new List<Email>();
             string directoryPath = folderPath;
             string filePath = $@".\{directoryPath}\{filename}";
 
-            if(!Directory.Exists(directoryPath))
+            if (!Directory.Exists(directoryPath))
             {
                 return backupList;
-            } 
+            }
             else
             {
                 if (!File.Exists(filePath))
                 {
                     return backupList;
-                } 
+                }
                 else
                 {
                     string fs = File.ReadAllText(filePath);
@@ -258,10 +277,18 @@ namespace SaintSender.DesktopUI
                 }
 
             }
-            
+
             return backupList;
         }
 
+        private DateTime GetBackUpFileLastModified(string folderPath, string filename)
+        {
+            string directoryPath = folderPath;
+            string filePath = $@".\{directoryPath}\{filename}";
+            DateTime lastBackUp = File.GetLastWriteTime(filePath);
+            return lastBackUp;
+        }
+            
     }
 
 }
