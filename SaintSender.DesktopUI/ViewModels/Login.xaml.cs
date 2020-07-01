@@ -2,6 +2,7 @@
 using SaintSender.Core.Entities;
 using SaintSender.Core.Services;
 using System;
+using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows;
 
@@ -17,9 +18,13 @@ namespace SaintSender.DesktopUI.ViewModels
         public Login()
         {
             InitializeComponent();
-            userData = JsonService.DeserializeJsonFile(Environment.CurrentDirectory + "//credentials.json");
-            email.Text = userData.Email;
-            password.Password = userData.Password;
+            if(File.Exists(Environment.CurrentDirectory + "//credentials.json"))
+            {
+                userData = JsonService.DeserializeJsonFile(Environment.CurrentDirectory + "//credentials.json");
+                email.Text = userData.Email;
+                password.Password = userData.Password;
+            }
+
         }
 
         /// <summary>
@@ -43,8 +48,6 @@ namespace SaintSender.DesktopUI.ViewModels
                 Password = password.Password.ToString().Length != 0 ? password.Password.ToString() : null
             };
 
-            //TODO execute this method only when user connects to gmail successfully
-            JsonService.SerializeToJson(userData);
 
             //todo Connect to gmail in this try and catch. Call MainWindow method and if connection is not succesfully display user a message.
             try
@@ -59,9 +62,14 @@ namespace SaintSender.DesktopUI.ViewModels
                         error.Visibility = Visibility.Hidden;
                         success.Visibility = Visibility.Visible;
                     }
-                }
-                success.Visibility = Visibility.Visible;
 
+
+                }
+
+                //TODO execute this method only when user connects to gmail successfully
+                JsonService.SerializeToJson(userData);
+
+                success.Visibility = Visibility.Visible;
                 MainWindow mainWindow = new MainWindow(userData);
                 mainWindow.Show();
                 Close();
@@ -99,7 +107,7 @@ namespace SaintSender.DesktopUI.ViewModels
         private void ClearEmailOnTextBoxClick(object sender, RoutedEventArgs e)
         {
             email.Text = "";
-            email.Focus();
+            //email.Focus();
         }
     }
 }
