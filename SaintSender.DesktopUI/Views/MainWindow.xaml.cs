@@ -46,14 +46,14 @@ namespace SaintSender.DesktopUI
             this.userData = userData;
             emailSource.ItemsSource = EmailsForDisplay;
         }
-        
-//         public MainWindow()
-//         {
-//             InitializeComponent();
-//             this.userData = userData;
-//             emailSource.ItemsSource = EmailsForDisplay;
-//         }
-        
+
+        //         public MainWindow()
+        //         {
+        //             InitializeComponent();
+        //             this.userData = userData;
+        //             emailSource.ItemsSource = EmailsForDisplay;
+        //         }
+
         public List<Email> PopulateEmailsForDisplay()
         {
             List<Email> tempBag = new List<Email>();
@@ -62,12 +62,12 @@ namespace SaintSender.DesktopUI
             {
                 MessageBox.Show("There was an error with the connection");
                 tempBag = (List<Email>)DeserializeBackup("Backups", "backup_emails.txt");
-                if(tempBag.Count == 0)
+                if (tempBag.Count == 0)
                 {
                     //SearchBox.Text = "No backup found"; thread error
                     SystemMessage.Content = "No suitable backup found!";
                     MessageBox.Show("No suitable backup found!");
-                } 
+                }
                 else
                 {
                     //SearchBox.Text = GetBackUpFileLastModified("Backups", "backup_emails.txt").ToString(); thread error
@@ -98,7 +98,7 @@ namespace SaintSender.DesktopUI
                     for (int i = inbox.Count - 1; i >= inbox.Count - 20; i--)
                     {
                         var message = inbox.GetMessage(i);
-                        Console.WriteLine($"From: {message.From} - Subject: {message.Subject} Date:{message.Date} x: {items[i].Flags.Value}");
+                        Console.WriteLine($"From: {message.From} - Subject: {message.Subject} Date:{message.Date} x: {items[i].Flags.Value} y:{message.MessageId} z:{items[i].Index}");
 
                         tempBag.Add(new Email()
                         {
@@ -107,7 +107,8 @@ namespace SaintSender.DesktopUI
                             DateReceived = message.Date.DateTime,
                             Subject = message.Subject.ToString(),
                             Message = message.TextBody,
-                            UniqueID = message.MessageId.ToString()
+                            UniqueID = message.MessageId.ToString(),
+                            Index = items[i].Index
                         });
                     }
                     client.Disconnect(true);
@@ -156,7 +157,17 @@ namespace SaintSender.DesktopUI
             EmailsForDisplay.Add(new Email() { Read = "Seen", DateReceived = new DateTime(2000, 12, 22), From = "dd", Message = "test", Subject = "test", UniqueID = "testid" });
             emailSource.ItemsSource = EmailsForDisplay;
             RefreshInbox();
+            //DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
+            //dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
+            //dispatcherTimer.Interval = new TimeSpan(0, 0, 10);
+            //dispatcherTimer.Start();
+
         }
+
+        //private void dispatcherTimer_Tick(object sender, EventArgs e)
+        //{
+        //    RefreshInbox();
+        //}
 
         private void SearchBox_MouseEnter(object sender, MouseEventArgs e)
         {
@@ -216,6 +227,8 @@ namespace SaintSender.DesktopUI
             {
                 Email selectedEmail = (Email)emailSource.SelectedItems[0];
                 ReadEmailWindow readEmailWindow = new ReadEmailWindow(selectedEmail);
+                if (selectedEmail.Read.Equals("None"))
+                { EmailStatusChange(selectedEmail.Index, MessageFlags.Seen); }
                 readEmailWindow.Show();
 
             }
@@ -333,6 +346,21 @@ namespace SaintSender.DesktopUI
                 Console.WriteLine("Displaying search results");
             }
             // emailSource.ItemsSource = EmailsForDisplay;
+        }
+        private void EmailStatusChange(int mailIndex, MessageFlags flag)
+        {
+            using (var client = new ImapClient())
+            {
+                client.Connect("imap.gmail.com", 993, true);
+                client.Authenticate(userData.Email, userData.Password);
+                var inbox = client.Inbox;
+                inbox.Open(FolderAccess.ReadWrite);
+                
+                inbox.AddFlags(mailIndex, flag, false);
+                client.Disconnect(true);
+            }
+            RefreshInbox();
+
         }
     }
 }
