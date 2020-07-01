@@ -39,7 +39,7 @@ namespace SaintSender.DesktopUI
         private UserData userData;
         public ObservableCollection<Email> EmailsForDisplay { get; set; } = new ObservableCollection<Email>();
         public IWebConnectionService connectionChecker = new ConnectionService();
-        
+        public string SystemMessageBackend { get; set; }
         public MainWindow(UserData userData)
         {
             InitializeComponent();
@@ -65,6 +65,7 @@ namespace SaintSender.DesktopUI
                 if(tempBag.Count == 0)
                 {
                     //SearchBox.Text = "No backup found"; thread error
+                    SystemMessage.Content = "No suitable backup found!";
                     MessageBox.Show("No suitable backup found!");
                 } 
                 else
@@ -237,6 +238,7 @@ namespace SaintSender.DesktopUI
             {
                 if (!Directory.Exists(directoryPath))
                 {
+                    SystemMessage.Content = "Folder does not exist, creating";
                     Console.WriteLine("Folder does not exist, creating");
                     Directory.CreateDirectory(directoryPath);
                 }
