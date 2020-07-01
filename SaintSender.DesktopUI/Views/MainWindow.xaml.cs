@@ -303,7 +303,8 @@ namespace SaintSender.DesktopUI
 
         private void ComposeMessage_Click(object sender, RoutedEventArgs e)
         {
-
+            ComposeMessage composeMessageWindow = new ComposeMessage();
+            composeMessageWindow.Show();
         }
     }
 }
