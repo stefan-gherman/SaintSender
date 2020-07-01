@@ -23,6 +23,9 @@ using System.Threading;
 using System.Collections.Concurrent;
 using System.Windows.Threading;
 using SaintSender.DesktopUI.Views;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.IO;
 
 namespace SaintSender.DesktopUI
 {
@@ -34,15 +37,15 @@ namespace SaintSender.DesktopUI
         public ObservableCollection<Email> EmailsForDisplay { get; set; } = new ObservableCollection<Email>();
         public MainWindow()
         {
-            
+
             InitializeComponent();
             emailSource.ItemsSource = EmailsForDisplay;
-            
+
 
         }
 
         public List<Email> PopulateEmailsForDisplay()
-        {      
+        {
             List<Email> tempBag = new List<Email>();
             using (var client = new ImapClient())
             {
@@ -59,14 +62,14 @@ namespace SaintSender.DesktopUI
 
                 var uids = client.Inbox.Search(SearchQuery.All);
                 var items = client.Inbox.Fetch(uids, MessageSummaryItems.Flags);
-                
+
 
 
                 for (int i = inbox.Count - 1; i >= inbox.Count - 20; i--)
                 {
                     var message = inbox.GetMessage(i);
                     Console.WriteLine($"From: {message.From} - Subject: {message.Subject} Date:{message.Date} x: {items[i].Flags.Value}");
-                    
+
                     tempBag.Add(new Email()
                     {
                         Read = items[i].Flags.Value.ToString(),
@@ -77,7 +80,7 @@ namespace SaintSender.DesktopUI
                         UniqueID = message.MessageId.ToString()
                     });
                 }
-                client.Disconnect(true);           
+                client.Disconnect(true);
             }
             return tempBag;
         }
@@ -89,7 +92,7 @@ namespace SaintSender.DesktopUI
                 Thread.Sleep(5000);
                 RefreshInbox();
             }
-            
+
         }
         public async void RefreshInbox()
         {
@@ -101,14 +104,16 @@ namespace SaintSender.DesktopUI
                 var tempBag = PopulateEmailsForDisplay();
                 Application.Current.Dispatcher.BeginInvoke(
                       DispatcherPriority.Background,
-                      new Action(() => {
+                      new Action(() =>
+                      {
                           EmailsForDisplay.Clear();
                       }));
                 foreach (var email in tempBag)
                 {
                     Application.Current.Dispatcher.BeginInvoke(
                       DispatcherPriority.Background,
-                      new Action(() => {
+                      new Action(() =>
+                      {
                           EmailsForDisplay.Add(email);
                       }));
                 }
@@ -116,7 +121,7 @@ namespace SaintSender.DesktopUI
             emailSource.ItemsSource = EmailsForDisplay;
         }
         private void Window_Loaded(object sender, RoutedEventArgs e)
-        {   
+        {
             EmailsForDisplay.Add(new Email() { Read = "Seen", DateReceived = new DateTime(2000, 12, 22), From = "dd", Message = "test", Subject = "test", UniqueID = "testid" });
             emailSource.ItemsSource = EmailsForDisplay;
             RefreshInbox();
@@ -128,7 +133,7 @@ namespace SaintSender.DesktopUI
             {
                 SearchBox.Text = String.Empty;
             }
-            
+
         }
 
         private void SearchBox_MouseLeave(object sender, MouseEventArgs e)
@@ -139,7 +144,7 @@ namespace SaintSender.DesktopUI
             }
         }
 
-       
+
 
         private void SearchButton_Click(object sender, RoutedEventArgs e)
         {
@@ -158,7 +163,7 @@ namespace SaintSender.DesktopUI
                 MessageBox.Show("Sorry, no emails matched your search criteria. \n Displaying the regular inbox messages.");
                 Console.WriteLine("Displaying regular inbox");
                 emailSource.ItemsSource = latestInbox;
-                
+
             }
             else
             {
@@ -173,7 +178,7 @@ namespace SaintSender.DesktopUI
             MessageBox.Show("single click");
         }
 
-       
+
         private void emailSource_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             try
@@ -186,6 +191,33 @@ namespace SaintSender.DesktopUI
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+            }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            string directoryPath = @".\Backups";
+            string fileName = @".\Backups\backup_emails.txt";
+            try
+            {
+                if(!Directory.Exists(directoryPath))
+                {
+                    Console.WriteLine("Folder does not exist, creating");
+                    Directory.CreateDirectory(directoryPath);
+                }
+                if(File.Exists(fileName))
+                {
+                    File.Delete(fileName);
+                }
+                using (StreamWriter writer = File.CreateText(fileName))
+                {
+                   
+                }
+
+            }
+            catch (Exception ex)
+            {
+               Console.WriteLine(ex.ToString()); 
             }
         }
     }
