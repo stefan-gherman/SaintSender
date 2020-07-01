@@ -39,7 +39,7 @@ namespace SaintSender.DesktopUI
         private readonly UserData userData;
         public ObservableCollection<Email> EmailsForDisplay { get; set; } = new ObservableCollection<Email>();
         public IWebConnectionService connectionChecker = new ConnectionService();
-        
+        public string SystemMessageBackend { get; set; }
         public MainWindow(UserData userData)
         {
             InitializeComponent();
@@ -65,6 +65,7 @@ namespace SaintSender.DesktopUI
                 if(tempBag.Count == 0)
                 {
                     //SearchBox.Text = "No backup found"; thread error
+                    SystemMessage.Content = "No suitable backup found!";
                     MessageBox.Show("No suitable backup found!");
                 } 
                 else
@@ -237,6 +238,7 @@ namespace SaintSender.DesktopUI
             {
                 if (!Directory.Exists(directoryPath))
                 {
+                    SystemMessage.Content = "Folder does not exist, creating";
                     Console.WriteLine("Folder does not exist, creating");
                     Directory.CreateDirectory(directoryPath);
                 }
@@ -305,6 +307,38 @@ namespace SaintSender.DesktopUI
         {
             ComposeMessage composeMessageWindow = new ComposeMessage();
             composeMessageWindow.Show();
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            RefreshInbox();
+        }
+
+        private void PackIcon_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            ObservableCollection<Email> latestInbox = EmailsForDisplay;
+            string searchTerm = SearchBox.Text;
+            ObservableCollection<Email> searchResultsEmails = new ObservableCollection<Email>();
+            foreach (var email in EmailsForDisplay)
+            {
+                if (email.From.Contains(searchTerm) || email.Subject.Contains(searchTerm) || email.Message.Contains(searchTerm))
+                {
+                    searchResultsEmails.Add(email);
+                }
+            }
+            if (searchResultsEmails.Count() == 0)
+            {
+                MessageBox.Show("Sorry, no emails matched your search criteria. \n Displaying the regular inbox messages.");
+                Console.WriteLine("Displaying regular inbox");
+                emailSource.ItemsSource = latestInbox;
+
+            }
+            else
+            {
+                emailSource.ItemsSource = searchResultsEmails;
+                Console.WriteLine("Displaying search results");
+            }
+            // emailSource.ItemsSource = EmailsForDisplay;
         }
     }
 }
