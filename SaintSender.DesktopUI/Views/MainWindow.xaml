@@ -109,7 +109,7 @@
                             </GridViewColumnHeader.ContextMenu>
                         </GridViewColumnHeader>
                     </GridViewColumn>
-                    <GridViewColumn Width="Auto"
+                    <GridViewColumn Width="400"
                                     DisplayMemberBinding="{Binding From}">
                         <GridViewColumnHeader>
                             From
@@ -118,7 +118,7 @@
                             </GridViewColumnHeader.ContextMenu>
                         </GridViewColumnHeader>
                     </GridViewColumn>
-                    <GridViewColumn Width="Auto"
+                    <GridViewColumn Width="400"
                                     DisplayMemberBinding="{Binding Subject}">
                         <GridViewColumnHeader>
                             Subject
@@ -127,7 +127,7 @@
                             </GridViewColumnHeader.ContextMenu>
                         </GridViewColumnHeader>
                     </GridViewColumn>
-                    <GridViewColumn Width="Auto"
+                    <GridViewColumn Width="150"
                                     DisplayMemberBinding="{Binding DateReceived}">
                         <GridViewColumnHeader>
                             Date
