@@ -73,7 +73,7 @@ namespace SaintSender.Core.Entities
         }
 
         /// <summary>
-        /// Call SetMessaeData() and ConnectAndSendEmail()
+        /// Call SetMessageData() and ConnectAndSendEmail()
         /// </summary>
         public void SendMessageToEmail()
         {
