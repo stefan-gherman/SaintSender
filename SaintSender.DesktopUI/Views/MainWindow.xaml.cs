@@ -302,7 +302,10 @@ namespace SaintSender.DesktopUI
             DateTime lastBackUp = File.GetLastWriteTime(filePath);
             return lastBackUp;
         }
-            
 
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            RefreshInbox();
+        }
     }
 }
