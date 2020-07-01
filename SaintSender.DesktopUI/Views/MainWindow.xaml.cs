@@ -48,6 +48,7 @@ namespace SaintSender.DesktopUI
         public List<Email> PopulateEmailsForDisplay()
         {
             List<Email> tempBag = new List<Email>();
+            // Connection Checker mock test
             if (!connectionChecker.NLMAPICheck())
             {
                 MessageBox.Show("There was an error with the connection");
@@ -63,6 +64,7 @@ namespace SaintSender.DesktopUI
                     MessageBox.Show($"Loaded last backup from{GetBackUpFileLastModified("Backups", "backup_emails.txt").ToString()}");
                 }
             }
+            // Remove if- else block to return to previous version
             else
             {
                 using (var client = new ImapClient())
