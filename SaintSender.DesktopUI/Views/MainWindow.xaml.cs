@@ -307,5 +307,32 @@ namespace SaintSender.DesktopUI
         {
             RefreshInbox();
         }
+
+        private void PackIcon_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            ObservableCollection<Email> latestInbox = EmailsForDisplay;
+            string searchTerm = SearchBox.Text;
+            ObservableCollection<Email> searchResultsEmails = new ObservableCollection<Email>();
+            foreach (var email in EmailsForDisplay)
+            {
+                if (email.From.Contains(searchTerm) || email.Subject.Contains(searchTerm) || email.Message.Contains(searchTerm))
+                {
+                    searchResultsEmails.Add(email);
+                }
+            }
+            if (searchResultsEmails.Count() == 0)
+            {
+                MessageBox.Show("Sorry, no emails matched your search criteria. \n Displaying the regular inbox messages.");
+                Console.WriteLine("Displaying regular inbox");
+                emailSource.ItemsSource = latestInbox;
+
+            }
+            else
+            {
+                emailSource.ItemsSource = searchResultsEmails;
+                Console.WriteLine("Displaying search results");
+            }
+            // emailSource.ItemsSource = EmailsForDisplay;
+        }
     }
 }

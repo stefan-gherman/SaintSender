@@ -73,24 +73,37 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
-            <TextBox x:Name="SearchBox"
-                     Grid.Column="0"
-                     Grid.Row="0"
-                     FontSize="18"
-                     Foreground="LightGray"
-                     Margin="3, 0, 3, 0" 
-                     MouseEnter="SearchBox_MouseEnter" 
-                     MouseLeave="SearchBox_MouseLeave" 
-                     >Search email
-            </TextBox>
-            <Button x:Name="SearchButton"  
-                    Grid.Column="1"
-                    Grid.Row="0"
-                    Content="Search"
-                    Margin="3, 0, 3, 0" 
-                    Click="SearchButton_Click"
-                    >
-            </Button>
+            <Grid Grid.Column="0"
+                  Grid.Row="0"
+                  Grid.ColumnSpan="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="40" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+                <TextBox x:Name="SearchBox"
+                         Grid.Column="0"
+                         FontSize="18"
+                         Foreground="LightGray"
+                         Margin="3, 0, 3, 0" 
+                         MouseEnter="SearchBox_MouseEnter" 
+                         MouseLeave="SearchBox_MouseLeave" 
+                         >Search email
+                </TextBox>
+            <materialDesign:PackIcon
+                        
+                        Grid.Column="1"
+                        Width="25"
+                        Height="25"
+                        Margin="2"
+                        
+                        Foreground="LightGray"
+                        Kind="Magnify"
+                        RenderTransformOrigin="0.327,-0.017" MouseLeftButtonDown="PackIcon_MouseLeftButtonDown" />
+            </Grid>
+            
         </Grid>
         <Label Grid.Column="1"
                  Grid.Row="2"
