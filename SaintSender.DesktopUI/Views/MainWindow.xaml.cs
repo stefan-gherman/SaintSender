@@ -26,6 +26,7 @@ using SaintSender.DesktopUI.Views;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.IO;
+using SaintSender.Core.Interfaces;
 
 namespace SaintSender.DesktopUI
 {
@@ -35,7 +36,7 @@ namespace SaintSender.DesktopUI
     public partial class MainWindow : Window
     {
         public ObservableCollection<Email> EmailsForDisplay { get; set; } = new ObservableCollection<Email>();
-        public ConnectionService connectionChecker = new ConnectionService();
+        public IWebConnectionService connectionChecker = new ConnectionService();
         public MainWindow()
         {
 
