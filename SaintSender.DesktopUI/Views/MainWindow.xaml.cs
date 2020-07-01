@@ -196,30 +196,44 @@ namespace SaintSender.DesktopUI
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            string directoryPath = @".\Backups";
-            string fileName = @".\Backups\backup_emails.txt";
+            BackupEmails("Backups", "backup_emails.txt");
+        }
+
+        private void BackupEmails(string folderPath, string fileName)
+        {
+            string directoryPath = folderPath;
+            string filePath = $@".\{directoryPath}\{fileName}";
+            IEnumerable<Email> testDeserialize = new List<Email>();
             try
             {
-                if(!Directory.Exists(directoryPath))
+                if (!Directory.Exists(directoryPath))
                 {
                     Console.WriteLine("Folder does not exist, creating");
                     Directory.CreateDirectory(directoryPath);
                 }
-                if(File.Exists(fileName))
+                if (File.Exists(filePath))
                 {
-                    File.Delete(fileName);
+                    File.Delete(filePath);
                 }
-                using (StreamWriter writer = File.CreateText(fileName))
+                using (StreamWriter writer = File.CreateText(filePath))
                 {
-                    writer.WriteLine("Test");
-                    var jsonString = JsonSerializer.Serialize(EmailsForDisplay, new JsonSerializerOptions() { WriteIndented = true});
-                    writer.WriteLine(jsonString );
+
+                    var jsonString = JsonSerializer.Serialize(EmailsForDisplay, new JsonSerializerOptions() { WriteIndented = true });
+                    writer.WriteLine(jsonString);
                 }
+
+                //string fs = File.ReadAllText(filePath);
+                //testDeserialize = JsonSerializer.Deserialize<List<Email>>(fs);
+
+                //foreach (var email in testDeserialize)
+                //{
+                //    Console.WriteLine(email.Message);
+                //}
 
             }
             catch (Exception ex)
             {
-               Console.WriteLine(ex.ToString()); 
+                Console.WriteLine(ex.ToString());
             }
         }
     }
