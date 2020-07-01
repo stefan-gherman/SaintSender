@@ -14,7 +14,7 @@
         xmlns:local="clr-namespace:SaintSender.DesktopUI"
         mc:Ignorable="d"
         Title="Saint Sender" Height="450" Width="1200" Loaded="Window_Loaded">
-    <Grid>
+    <Grid x:Name="gridMain">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="5" />
             <ColumnDefinition Width="*" />
