@@ -1,0 +1,74 @@
+[33mcommit 327bcfeeadef9a50a283fa822115cd3b96ddce8b[m[33m ([m[1;36mHEAD -> [m[1;32mlogin[m[33m)[m
+Author: Claudiu <cduneata@gmail.com>
+Date:   Tue Jun 30 21:01:02 2020 +0300
+
+    Add json service for serialization
+
+[33mcommit 89da8d9816643c3e1d0a5ae3fec065f3a74a6a99[m
+Author: Claudiu <cduneata@gmail.com>
+Date:   Tue Jun 30 21:00:25 2020 +0300
+
+    Add user class with email and username
+
+[33mcommit 48caf3bf9be0cba2047cef5f6c240e1ec62e1eca[m
+Author: Claudiu <cduneata@gmail.com>
+Date:   Tue Jun 30 17:35:40 2020 +0300
+
+    Add textbox and password box name
+
+[33mcommit 1ed6e35d3e37ca6421c8e59a390b9f2b1fd91abc[m
+Author: Claudiu <cduneata@gmail.com>
+Date:   Tue Jun 30 17:33:11 2020 +0300
+
+    Add sign in event
+
+[33mcommit fbb5e6d85d9f5da20eea295d18a4e946dee22774[m
+Author: Claudiu <cduneata@gmail.com>
+Date:   Tue Jun 30 17:24:01 2020 +0300
+
+    Add close window event on button
+
+[33mcommit 3a995da2c91723e7db1b520e18b2a8364e94cc79[m
+Author: Claudiu <cduneata@gmail.com>
+Date:   Tue Jun 30 17:13:59 2020 +0300
+
+    Add login window design
+
+[33mcommit 8084e0f950e1da24cbc6b48051bf71ea39d2cc07[m[33m ([m[1;31morigin/development[m[33m, [m[1;32mdevelopment[m[33m)[m
+Merge: b68415b b5cc5b4
+Author: Dan Dumitriu <55446058+dandumitriu33@users.noreply.github.com>
+Date:   Tue Jun 30 15:46:12 2020 +0300
+
+    Merge pull request #1 from dandumitriu33/dantest
+    
+    Add initial UI w/ info
+
+[33mcommit b5cc5b4002ca4b9a93a8a18c67fdd373f1344eac[m[33m ([m[1;31morigin/dantest[m[33m)[m
+Author: Dan Dumitriu <dandumitriu33@gmail.com>
+Date:   Tue Jun 30 15:45:34 2020 +0300
+
+    Add initial UI w/ info
+
+[33mcommit b68415bbd4f63629d6f1e9648b21bc1912ab70b8[m
+Author: Dan Dumitriu <dandumitriu33@gmail.com>
+Date:   Tue Jun 30 13:33:25 2020 +0300
+
+    Add Seen/None flag check for emails
+
+[33mcommit e343c666118876aa446bd8cc4a84194e32080cee[m
+Author: Dan Dumitriu <dandumitriu33@gmail.com>
+Date:   Tue Jun 30 13:27:13 2020 +0300
+
+    Change email framework to MailKit
+
+[33mcommit 23f6d281c860f35c10027f8e56a8a1281a519d43[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmaster[m[33m)[m
+Author: Dan Dumitriu <dandumitriu33@gmail.com>
+Date:   Tue Jun 30 12:34:52 2020 +0300
+
+    Add read emails from Gmail.IMAP backend only
+
+[33mcommit 0c69cef431d451ee3c4f499f8f948b55d669215e[m
+Author: Bence <bence@seedr.co.uk>
+Date:   Tue Jun 30 09:49:26 2020 +0200
+
+    Initial commit
