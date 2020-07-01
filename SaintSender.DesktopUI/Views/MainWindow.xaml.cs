@@ -42,6 +42,7 @@ namespace SaintSender.DesktopUI
         public ObservableCollection<Email> EmailsForDisplay { get; set; } = new ObservableCollection<Email>();
         public IWebConnectionService connectionChecker = new ConnectionService();
         public string SystemMessageBackend { get; set; }
+        public bool RefreshAllowed { get; set; } = true;
         public MainWindow(UserData userData)
         {
             InitializeComponent();
@@ -160,21 +161,24 @@ namespace SaintSender.DesktopUI
             });
             emailSource.ItemsSource = EmailsForDisplay;
             backupEmailsForDisplay.Clear();
-            SystemMessage.Content = $"Total displayed messages: {EmailsForDisplay.Count()} and backup {backupEmailsForDisplay.Count()}";
+            SystemMessage.Content = "";
         }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             RefreshInbox();
-            DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
+            DispatcherTimer dispatcherTimer = new DispatcherTimer();
             dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
             dispatcherTimer.Interval = new TimeSpan(0, 0, 10);
-            dispatcherTimer.Start();
-
+            dispatcherTimer.Start(); 
         }
 
         private void dispatcherTimer_Tick(object sender, EventArgs e)
         {
-            RefreshInbox();
+            if (RefreshAllowed)
+            {
+                RefreshInbox();
+            }
+            
         }
 
         private void SearchBox_MouseEnter(object sender, MouseEventArgs e)
@@ -257,9 +261,6 @@ namespace SaintSender.DesktopUI
                     var jsonString = JsonSerializer.Serialize(EmailsForDisplay, new JsonSerializerOptions() { WriteIndented = true });
                     writer.WriteLine(Eramake.eCryptography.Encrypt(jsonString));
                 }
-
-
-
             }
             catch (Exception ex)
             {
@@ -295,7 +296,6 @@ namespace SaintSender.DesktopUI
                 }
 
             }
-
             return backupList;
         }
 
@@ -329,6 +329,7 @@ namespace SaintSender.DesktopUI
 
         private void executeSearch()
         {
+            RefreshAllowed = false;
             string searchString = SearchBox.Text;
             ObservableCollection<Email> searchResults = new ObservableCollection<Email>();
             string pattern = searchString;
@@ -390,7 +391,9 @@ namespace SaintSender.DesktopUI
 
         private void Inbox_Button_Click(object sender, RoutedEventArgs e)
         {
+            emailSource.ItemsSource = EmailsForDisplay;
             RefreshInbox();
+            RefreshAllowed = true;
         }
 
     }
