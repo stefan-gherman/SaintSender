@@ -203,7 +203,6 @@ namespace SaintSender.DesktopUI
         {
             string directoryPath = folderPath;
             string filePath = $@".\{directoryPath}\{fileName}";
-            IEnumerable<Email> testDeserialize = new List<Email>();
             try
             {
                 if (!Directory.Exists(directoryPath))
@@ -222,13 +221,7 @@ namespace SaintSender.DesktopUI
                     writer.WriteLine(Eramake.eCryptography.Encrypt(jsonString));
                 }
 
-                //string fs = File.ReadAllText(filePath);
-                //testDeserialize = JsonSerializer.Deserialize<List<Email>>(Eramake.eCryptography.Decrypt(fs));
-
-                //foreach (var email in testDeserialize)
-                //{
-                //    Console.WriteLine(email.Message);
-                //}
+               
 
             }
             catch (Exception ex)
@@ -236,6 +229,39 @@ namespace SaintSender.DesktopUI
                 Console.WriteLine(ex.ToString());
             }
         }
+
+        private IEnumerable<Email> DeserializeBackup(string folderPath, string filename)
+        {
+            IEnumerable <Email> backupList = new List<Email>();
+            string directoryPath = folderPath;
+            string filePath = $@".\{directoryPath}\{filename}";
+
+            if(!Directory.Exists(directoryPath))
+            {
+                return backupList;
+            } 
+            else
+            {
+                if (!File.Exists(filePath))
+                {
+                    return backupList;
+                } 
+                else
+                {
+                    string fs = File.ReadAllText(filePath);
+                    backupList = JsonSerializer.Deserialize<List<Email>>(Eramake.eCryptography.Decrypt(fs));
+
+                    foreach (var email in backupList)
+                    {
+                        Console.WriteLine(email.Message);
+                    }
+                }
+
+            }
+            
+            return backupList;
+        }
+
     }
 
 }
