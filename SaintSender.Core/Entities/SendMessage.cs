@@ -63,6 +63,7 @@ namespace SaintSender.Core.Entities
                 smtp.MessageSent += (sender, args) =>
                 {
                     Console.WriteLine("Email was sent " + args.Response) ;
+                    // SaintSender.DesktopUI.EmailSentNotification();
                 };
 
                 await smtp.ConnectAsync("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
