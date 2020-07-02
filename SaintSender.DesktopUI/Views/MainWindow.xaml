@@ -63,7 +63,7 @@
                 Grid.Row="0"
                 Grid.Column="0"
                 Margin="3,0,3,0"
-                Click="Button_Click"
+                Click="Backup_Button_Click"
                 Content="Backup" />
             <Button
                 x:Name="InboxButton"

@@ -1,35 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using SaintSender.Core.Services;
+﻿using MailKit;
 using MailKit.Net.Imap;
 using MailKit.Search;
-using MailKit;
-using MimeKit;
-using System.Collections.ObjectModel;
 using SaintSender.Core.Entities;
-using SaintSender.DesktopUI.ViewModels;
-using System.Threading;
-using System.Collections.Concurrent;
-using System.Windows.Threading;
-using SaintSender.DesktopUI.Views;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.IO;
 using SaintSender.Core.Interfaces;
-using System.Linq.Expressions;
+using SaintSender.Core.Services;
+using SaintSender.DesktopUI.ViewModels;
+using SaintSender.DesktopUI.Views;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
+using System.Text.Json;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace SaintSender.DesktopUI
 {
@@ -42,13 +29,12 @@ namespace SaintSender.DesktopUI
         public ObservableCollection<Email> EmailsForDisplay { get; set; } = new ObservableCollection<Email>();
         public IWebConnectionService connectionChecker = new ConnectionService();
         public string SystemMessageBackend { get; set; }
-        public bool RefreshAllowed { get; set; } = true; 
+        public bool RefreshAllowed { get; set; } = true;
         public MainWindow(UserData userData)
         {
             InitializeComponent();
             this.userData = userData;
             emailSource.ItemsSource = EmailsForDisplay;
-
             // if there is no connection then disable buttons
             if (!connectionChecker.NLMAPICheck())
             {
@@ -58,13 +44,11 @@ namespace SaintSender.DesktopUI
                 this.Title = "Saint Sender Offline Mode";
             }
         }
-        //         public MainWindow()
-        //         {
-        //             InitializeComponent();
-        //             this.userData = userData;
-        //             emailSource.ItemsSource = EmailsForDisplay;
-        //         }
 
+        /// <summary>
+        /// Populates the list of 20 emails to be displayed by the UI.
+        /// </summary>
+        /// <returns></returns>
         public List<Email> PopulateEmailsForDisplay()
         {
             List<Email> tempBag = new List<Email>();
@@ -75,29 +59,20 @@ namespace SaintSender.DesktopUI
                 tempBag = (List<Email>)DeserializeBackup("Backups", "backup_emails.txt");
                 if (tempBag.Count == 0)
                 {
-                    //SearchBox.Text = "No backup found"; thread error
-                    //SystemMessage.Content = "No suitable backup found!";
                     MessageBox.Show("No suitable backup found!");
                 }
                 else
                 {
-                    //SearchBox.Text = GetBackUpFileLastModified("Backups", "backup_emails.txt").ToString(); thread error
                     MessageBox.Show($"Loaded last backup from {GetBackUpFileLastModified("Backups", "backup_emails.txt").ToString()}");
                 }
                 RefreshAllowed = false;
-
             }
-            // Remove if- else block to return to previous version
             else
             {
                 using (var client = new ImapClient())
                 {
-
                     client.Connect("imap.gmail.com", 993, true);
                     client.Authenticate(userData.Email, userData.Password);
-                    //client.Authenticate("ionionescu2020demo@gmail.com", "demoaccountpassword");
-
-                    // The Inbox folder is always available on all IMAP servers...
                     var inbox = client.Inbox;
                     inbox.Open(FolderAccess.ReadWrite);
 
@@ -107,16 +82,13 @@ namespace SaintSender.DesktopUI
                     var uids = client.Inbox.Search(SearchQuery.All);
                     var items = client.Inbox.Fetch(uids, MessageSummaryItems.Flags);
 
-
-
                     for (int i = inbox.Count - 1; i >= inbox.Count - 20; i--)
                     {
                         var message = inbox.GetMessage(i);
                         Console.WriteLine($"From: {message.From} - Subject: {message.Subject} Date:{message.Date} x: {items[i].Flags.Value} y:{message.MessageId} z:{items[i].Index}");
-
                         tempBag.Add(new Email()
                         {
-                            Read = items[i].Flags.Value.ToString() == "None" ? "Unread" : "Read", 
+                            Read = items[i].Flags.Value.ToString() == "None" ? "Unread" : "Read",
                             From = message.From.ToString(),
                             DateReceived = message.Date.DateTime,
                             Subject = message.Subject.ToString(),
@@ -131,15 +103,9 @@ namespace SaintSender.DesktopUI
             return tempBag;
         }
 
-        public void AutoRefreshInbox()
-        {
-            while (true)
-            {
-                Thread.Sleep(5000);
-                RefreshInbox();
-            }
-        }
-
+        /// <summary>
+        /// Refreshes the list of emails to be displayed by the UI by calling <seealso cref="PopulateEmailsForDisplay"/>.
+        /// </summary>
         public async void RefreshInbox()
         {
             emailSource.ItemsSource = EmailsForDisplay;
@@ -150,16 +116,9 @@ namespace SaintSender.DesktopUI
             }
             emailSource.ItemsSource = backupEmailsForDisplay;
             EmailsForDisplay.Clear();
-
             await Task.Run(() =>
             {
                 var tempBag = PopulateEmailsForDisplay();
-                //Application.Current.Dispatcher.BeginInvoke(
-                //      DispatcherPriority.Background,
-                //      new Action(() =>
-                //      {
-                //          EmailsForDisplay.Clear();
-                //      }));
                 foreach (var email in tempBag)
                 {
                     Application.Current.Dispatcher.BeginInvoke(
@@ -176,11 +135,12 @@ namespace SaintSender.DesktopUI
             string backupPath = Environment.CurrentDirectory + @"\Backups\backup_emails.txt";
             if (!connectionChecker.NLMAPICheck())
             {
-                if(File.Exists(backupPath))
+                if (File.Exists(backupPath))
                 {
                     SystemMessage.Content = $"No connection. Loaded backup from {GetBackUpFileLastModified("Backups", "backup_emails.txt").ToString()}";
 
-                } else
+                }
+                else
                 {
                     SystemMessage.Content = "No Connection. No suitable backup found!";
                 }
@@ -193,16 +153,20 @@ namespace SaintSender.DesktopUI
             DispatcherTimer dispatcherTimer = new DispatcherTimer();
             dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
             dispatcherTimer.Interval = new TimeSpan(0, 0, 10);
-            dispatcherTimer.Start(); 
+            dispatcherTimer.Start();
         }
 
+        /// <summary>
+        /// Refresh mechanism part. Algorithm that is called by the dispatch timer in Window_Loaded.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void dispatcherTimer_Tick(object sender, EventArgs e)
         {
             if (RefreshAllowed)
             {
                 RefreshInbox();
             }
-            
         }
 
         private void SearchBox_MouseEnter(object sender, MouseEventArgs e)
@@ -222,12 +186,6 @@ namespace SaintSender.DesktopUI
             }
         }
 
-        private void GridViewColumnHeader_Click(object sender, RoutedEventArgs e)
-        {
-            MessageBox.Show("single click");
-        }
-
-
         private void emailSource_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             try
@@ -235,22 +193,11 @@ namespace SaintSender.DesktopUI
                 Email selectedEmail = (Email)emailSource.SelectedItems[0];
                 ReadEmailWindow readEmailWindow = new ReadEmailWindow(selectedEmail);
                 readEmailWindow.Show();
-                //Parallel.ForEach(EmailsForDisplay, (email) =>
-                //{
-                //    if (email.UniqueID.Equals(selectedEmail.UniqueID))
-                //    {
-                //        email.Read = "Seen";
-                //    }
-                //});
-                //selectedEmail.Read = "Seen";
-                //EmailStatusChange(selectedEmail.Index, MessageFlags.Seen);
                 if (selectedEmail.Read.Equals("Unread"))
                 {
                     selectedEmail.Read = "Read";
-                    EmailStatusChange(selectedEmail.Index, MessageFlags.Seen); 
+                    EmailStatusChange(selectedEmail.Index, MessageFlags.Seen);
                 }
-
-
             }
             catch (Exception ex)
             {
@@ -258,11 +205,16 @@ namespace SaintSender.DesktopUI
             }
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Backup_Button_Click(object sender, RoutedEventArgs e)
         {
             BackupEmails("Backups", "backup_emails.txt");
         }
 
+        /// <summary>
+        /// Encrypts and places the emails in the list to a file on disk.
+        /// </summary>
+        /// <param name="folderPath"></param>
+        /// <param name="fileName"></param>
         private void BackupEmails(string folderPath, string fileName)
         {
             string directoryPath = folderPath;
@@ -281,7 +233,6 @@ namespace SaintSender.DesktopUI
                 }
                 using (StreamWriter writer = File.CreateText(filePath))
                 {
-
                     var jsonString = JsonSerializer.Serialize(EmailsForDisplay, new JsonSerializerOptions() { WriteIndented = true });
                     writer.WriteLine(Eramake.eCryptography.Encrypt(jsonString));
                 }
@@ -292,6 +243,12 @@ namespace SaintSender.DesktopUI
             }
         }
 
+        /// <summary>
+        /// Decrypts backed up emails from JSON file on disk and returns them.
+        /// </summary>
+        /// <param name="folderPath"></param>
+        /// <param name="filename"></param>
+        /// <returns></returns>
         private IEnumerable<Email> DeserializeBackup(string folderPath, string filename)
         {
             IEnumerable<Email> backupList = new List<Email>();
@@ -318,12 +275,16 @@ namespace SaintSender.DesktopUI
                         Console.WriteLine(email.Message);
                     }
                 }
-
             }
             return backupList;
         }
 
-
+        /// <summary>
+        /// Returns the time when the last backup was made.
+        /// </summary>
+        /// <param name="folderPath"></param>
+        /// <param name="filename"></param>
+        /// <returns></returns>
         private DateTime GetBackUpFileLastModified(string folderPath, string filename)
         {
             string directoryPath = folderPath;
@@ -337,7 +298,7 @@ namespace SaintSender.DesktopUI
             ComposeMessage composeMessageWindow = new ComposeMessage();
             composeMessageWindow.Show();
         }
-        
+
         private void SearchBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
@@ -351,13 +312,15 @@ namespace SaintSender.DesktopUI
             executeSearch();
         }
 
+        /// <summary>
+        /// Executes the search on emails based on the text in the Search Box.
+        /// </summary>
         private void executeSearch()
         {
             RefreshAllowed = false;
             string searchString = SearchBox.Text;
             ObservableCollection<Email> searchResults = new ObservableCollection<Email>();
             string pattern = searchString;
-
             foreach (Email email in EmailsForDisplay)
             {
                 string emailFrom = " ";
@@ -375,11 +338,9 @@ namespace SaintSender.DesktopUI
                 {
                     emailMessage = email.Message;
                 }
-
                 bool matchFrom = Regex.IsMatch(emailFrom, pattern, RegexOptions.IgnoreCase);
                 bool matchSubject = Regex.IsMatch(emailSubject, pattern, RegexOptions.IgnoreCase);
                 bool matchMessage = Regex.IsMatch(emailMessage, pattern, RegexOptions.IgnoreCase);
-
                 if (matchFrom || matchSubject || matchMessage)
                 {
                     searchResults.Add(email);
@@ -398,6 +359,11 @@ namespace SaintSender.DesktopUI
             }
         }
 
+        /// <summary>
+        /// Changes the status of an Unread email to Read and sends server post request.
+        /// </summary>
+        /// <param name="mailIndex"></param>
+        /// <param name="flag"></param>
         private void EmailStatusChange(int mailIndex, MessageFlags flag)
         {
             using (var client = new ImapClient())
@@ -406,12 +372,10 @@ namespace SaintSender.DesktopUI
                 client.Authenticate(userData.Email, userData.Password);
                 var inbox = client.Inbox;
                 inbox.Open(FolderAccess.ReadWrite);
-                
+
                 inbox.AddFlagsAsync(mailIndex, flag, false);
                 client.Disconnect(true);
             }
-            //RefreshInbox();
-
         }
 
         private void Inbox_Button_Click(object sender, RoutedEventArgs e)
@@ -421,14 +385,12 @@ namespace SaintSender.DesktopUI
                 emailSource.ItemsSource = EmailsForDisplay;
                 RefreshInbox();
                 RefreshAllowed = true;
-            } else
+            }
+            else
             {
                 RefreshAllowed = false;
-                
             }
-
         }
 
-        
     }
 }
