@@ -172,7 +172,7 @@ namespace SaintSender.DesktopUI
             });
             emailSource.ItemsSource = EmailsForDisplay;
             backupEmailsForDisplay.Clear();
-            SystemMessage.Content = "";
+            SystemMessage.Content = String.Empty;
             string backupPath = Environment.CurrentDirectory + @"\Backups\backup_emails.txt";
             if (!connectionChecker.NLMAPICheck())
             {
@@ -394,6 +394,7 @@ namespace SaintSender.DesktopUI
             {
                 SystemMessage.Content = $"No search matches for {searchString}. Displaying regular inbox.";
                 emailSource.ItemsSource = EmailsForDisplay;
+                RefreshAllowed = true;
             }
         }
 
