@@ -3,11 +3,7 @@ using MailKit.Security;
 using MimeKit;
 using SaintSender.Core.Services;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SaintSender.Core.Entities
 {
@@ -62,7 +58,7 @@ namespace SaintSender.Core.Entities
             {
                 smtp.MessageSent += (sender, args) =>
                 {
-                    Console.WriteLine("Email was sent " + args.Response) ;
+                    Console.WriteLine("Email was sent " + args.Response);
                 };
 
                 await smtp.ConnectAsync("smtp.gmail.com", 587, SecureSocketOptions.StartTls);

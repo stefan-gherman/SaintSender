@@ -1,12 +1,8 @@
 ﻿using NETWORKLIST;
 using SaintSender.Core.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SaintSender.Core.Services
 {
@@ -16,7 +12,7 @@ namespace SaintSender.Core.Services
         {
             try
             {
-                using (WebClient client = new WebClient() { Proxy = null})
+                using (WebClient client = new WebClient() { Proxy = null })
                 {
                     using (client.OpenRead(url))
                     {
@@ -39,21 +35,22 @@ namespace SaintSender.Core.Services
 
         public bool PingChek(string url)
         {
-            try {
+            try
+            {
                 Ping myPing = new Ping();
                 PingReply reply = myPing.Send(url, 2000);
-                if(reply != null)
+                if (reply != null)
                 {
 
-                    return true; 
+                    return true;
                 }
                 return false;
-            } 
-            catch(Exception)
+            }
+            catch (Exception)
             {
                 return false;
             }
-            
+
         }
     }
 }
