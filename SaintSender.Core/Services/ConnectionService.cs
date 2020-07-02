@@ -34,6 +34,7 @@ namespace SaintSender.Core.Services
         {
             INetworkListManager networkListManager = new NetworkListManager();
             return networkListManager.IsConnectedToInternet;
+            //return false;
         }
 
         public bool PingChek(string url)
