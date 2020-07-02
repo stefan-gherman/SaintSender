@@ -42,14 +42,22 @@ namespace SaintSender.DesktopUI
         public ObservableCollection<Email> EmailsForDisplay { get; set; } = new ObservableCollection<Email>();
         public IWebConnectionService connectionChecker = new ConnectionService();
         public string SystemMessageBackend { get; set; }
-        public bool RefreshAllowed { get; set; } = true;
+        public bool RefreshAllowed { get; set; } = true; 
         public MainWindow(UserData userData)
         {
             InitializeComponent();
             this.userData = userData;
             emailSource.ItemsSource = EmailsForDisplay;
-        }
 
+            // if there is no connection then disable buttons
+            if (!connectionChecker.NLMAPICheck())
+            {
+                InboxButton.IsEnabled = false;
+                ComposeMessageButton.IsEnabled = false;
+                BackupButton.IsEnabled = false;
+                this.Title = "Saint Sender Offline Mode";
+            }
+        }
         //         public MainWindow()
         //         {
         //             InitializeComponent();
@@ -68,20 +76,23 @@ namespace SaintSender.DesktopUI
                 if (tempBag.Count == 0)
                 {
                     //SearchBox.Text = "No backup found"; thread error
-                    SystemMessage.Content = "No suitable backup found!";
+                    //SystemMessage.Content = "No suitable backup found!";
                     MessageBox.Show("No suitable backup found!");
                 }
                 else
                 {
                     //SearchBox.Text = GetBackUpFileLastModified("Backups", "backup_emails.txt").ToString(); thread error
-                    MessageBox.Show($"Loaded last backup from{GetBackUpFileLastModified("Backups", "backup_emails.txt").ToString()}");
+                    MessageBox.Show($"Loaded last backup from {GetBackUpFileLastModified("Backups", "backup_emails.txt").ToString()}");
                 }
+                RefreshAllowed = false;
+
             }
             // Remove if- else block to return to previous version
             else
             {
                 using (var client = new ImapClient())
                 {
+
                     client.Connect("imap.gmail.com", 993, true);
                     client.Authenticate(userData.Email, userData.Password);
                     //client.Authenticate("ionionescu2020demo@gmail.com", "demoaccountpassword");
@@ -162,7 +173,20 @@ namespace SaintSender.DesktopUI
             emailSource.ItemsSource = EmailsForDisplay;
             backupEmailsForDisplay.Clear();
             SystemMessage.Content = String.Empty;
+            string backupPath = Environment.CurrentDirectory + @"\Backups\backup_emails.txt";
+            if (!connectionChecker.NLMAPICheck())
+            {
+                if(File.Exists(backupPath))
+                {
+                    SystemMessage.Content = $"No connection. Loaded backup from {GetBackUpFileLastModified("Backups", "backup_emails.txt").ToString()}";
+
+                } else
+                {
+                    SystemMessage.Content = "No Connection. No suitable backup found!";
+                }
+            }
         }
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             RefreshInbox();
@@ -392,9 +416,17 @@ namespace SaintSender.DesktopUI
 
         private void Inbox_Button_Click(object sender, RoutedEventArgs e)
         {
-            emailSource.ItemsSource = EmailsForDisplay;
-            RefreshInbox();
-            RefreshAllowed = true;
+            if (connectionChecker.NLMAPICheck())
+            {
+                emailSource.ItemsSource = EmailsForDisplay;
+                RefreshInbox();
+                RefreshAllowed = true;
+            } else
+            {
+                RefreshAllowed = false;
+                
+            }
+
         }
 
         

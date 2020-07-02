@@ -1,5 +1,6 @@
 ﻿using MailKit.Net.Imap;
 using SaintSender.Core.Entities;
+using SaintSender.Core.Interfaces;
 using SaintSender.Core.Services;
 using System;
 using System.IO;
@@ -13,12 +14,25 @@ namespace SaintSender.DesktopUI.ViewModels
     /// </summary>
     public partial class Login : Window
     {
+        IWebConnectionService webConnectionService = new ConnectionService();
+
         private readonly UserData userData;
+
+        private MainWindow mainWindow;
 
         public Login()
         {
+
             InitializeComponent();
-            if(File.Exists(Environment.CurrentDirectory + "//credentials.json"))
+
+            if (!webConnectionService.NLMAPICheck())
+            {
+                mainWindow = new MainWindow(userData);
+                mainWindow.Show();
+                Close();
+            }
+
+            if (File.Exists(Environment.CurrentDirectory + "//credentials.json"))
             {
                 userData = JsonService.DeserializeJsonFile(Environment.CurrentDirectory + "//credentials.json");
                 email.Text = userData.Email;
@@ -54,25 +68,40 @@ namespace SaintSender.DesktopUI.ViewModels
             {
                 using (var client = new ImapClient())
                 {
-                    client.Connect("imap.gmail.com", 993, true);
-                    client.Authenticate(userData.Email, userData.Password);
-
-                    if (error.Visibility == Visibility.Visible)
+                    if (webConnectionService.NLMAPICheck())
                     {
-                        error.Visibility = Visibility.Hidden;
+
+                        client.Connect("imap.gmail.com", 993, true);
+                        client.Authenticate(userData.Email, userData.Password);
+                        client.Disconnect(true);
+                        //TODO execute this method only when user connects to gmail successfully
+                        JsonService.SerializeToJson(userData);
+
                         success.Visibility = Visibility.Visible;
+                        mainWindow = new MainWindow(userData);
+                        mainWindow.Show();
+                        if (error.Visibility == Visibility.Visible)
+                        {
+                            error.Visibility = Visibility.Hidden;
+                            success.Visibility = Visibility.Visible;
+                        }
+                        Close();
+
                     }
-
-
+                    else
+                    {
+                        if (error.Visibility == Visibility.Visible)
+                        {
+                            error.Visibility = Visibility.Hidden;
+                            success.Visibility = Visibility.Visible;
+                        }
+                        mainWindow = new MainWindow(userData);
+                        mainWindow.Show();
+                        Close();
+                    }
                 }
 
-                //TODO execute this method only when user connects to gmail successfully
-                JsonService.SerializeToJson(userData);
 
-                success.Visibility = Visibility.Visible;
-                MainWindow mainWindow = new MainWindow(userData);
-                mainWindow.Show();
-                Close();
             }
             catch (Exception ex)
             {

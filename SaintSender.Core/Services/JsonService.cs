@@ -30,12 +30,16 @@ namespace SaintSender.Core.Services
         /// <param name="jsonText">json text after serialization</param>
         private static void WriteJsonInDirectory(string path, string jsonText)
         {
+
+            string encryptedText = Eramake.eCryptography.Encrypt(jsonText);
+
+
             if (File.Exists(path))
             {
                 File.Delete(path);
                 using (StreamWriter streamWriter = new StreamWriter(path, true))
                 {
-                    streamWriter.WriteLine(jsonText);
+                    streamWriter.WriteLine(encryptedText);
                     streamWriter.Close();
                 }
             }
@@ -43,7 +47,7 @@ namespace SaintSender.Core.Services
             {
                 using (StreamWriter streamWriter = new StreamWriter(path, true))
                 {
-                    streamWriter.WriteLine(jsonText);
+                    streamWriter.WriteLine(encryptedText);
                     streamWriter.Close();
                 }
             }
@@ -62,7 +66,7 @@ namespace SaintSender.Core.Services
             try
             {
                 string jsonString = File.ReadAllText(path);
-                userData = JsonSerializer.Deserialize<UserData>(jsonString);
+                userData = JsonSerializer.Deserialize<UserData>(Eramake.eCryptography.Decrypt(jsonString));
                 return userData;
             }
             catch (Exception ex)
