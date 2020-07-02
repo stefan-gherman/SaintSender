@@ -95,17 +95,21 @@
                          MouseLeave="SearchBox_MouseLeave" KeyDown="SearchBox_KeyDown" 
                          >Search email
                 </TextBox>
-            <materialDesign:PackIcon
-                        
-                        Grid.Column="1"
-                        Width="25"
-                        Height="25"
-                        Margin="2"
-                        
-                        Foreground="LightGray"
-                        Kind="Magnify"
-                        RenderTransformOrigin="0.327,-0.017" MouseLeftButtonDown="PackIcon_MouseLeftButtonDown" />
-            </Grid>        
+                <Button Grid.Column="1"
+                        Margin="2, 0, 2, 0" Click="Search_Button_Click"
+                        >
+                    <Grid>
+                        <materialDesign:PackIcon
+                                Width="38"
+                                Height="Auto"
+                                Foreground="AntiqueWhite"
+                                Kind="Magnify" 
+                                Margin="-16,0,-18,0" 
+                                VerticalAlignment="Stretch"
+                                />
+                    </Grid>
+                </Button>
+            </Grid>
         </Grid>
         <Label Grid.Column="1"
                  Grid.Row="2"
@@ -124,7 +128,7 @@
             <ListView.ItemContainerStyle>
                 <Style TargetType="{x:Type ListBoxItem}">
                     <Style.Triggers>
-                       
+
                         <DataTrigger Binding="{Binding Read}" Value="None">
                             <Setter Property="FontWeight" Value="Bold" />
                         </DataTrigger>
