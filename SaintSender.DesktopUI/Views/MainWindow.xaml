@@ -137,7 +137,7 @@
             <ListView.ItemContainerStyle>
                 <Style TargetType="{x:Type ListBoxItem}">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding Read}" Value="None">
+                        <DataTrigger Binding="{Binding Read}" Value="Unread">
                             <Setter Property="FontWeight" Value="Bold" />
                         </DataTrigger>
                     </Style.Triggers>

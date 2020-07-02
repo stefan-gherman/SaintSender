@@ -116,7 +116,7 @@ namespace SaintSender.DesktopUI
 
                         tempBag.Add(new Email()
                         {
-                            Read = items[i].Flags.Value.ToString(),
+                            Read = items[i].Flags.Value.ToString() == "None" ? "Unread" : "Read", 
                             From = message.From.ToString(),
                             DateReceived = message.Date.DateTime,
                             Subject = message.Subject.ToString(),
@@ -244,9 +244,9 @@ namespace SaintSender.DesktopUI
                 //});
                 //selectedEmail.Read = "Seen";
                 //EmailStatusChange(selectedEmail.Index, MessageFlags.Seen);
-                if (selectedEmail.Read.Equals("None"))
+                if (selectedEmail.Read.Equals("Unread"))
                 {
-                    selectedEmail.Read = "Seen";
+                    selectedEmail.Read = "Read";
                     EmailStatusChange(selectedEmail.Index, MessageFlags.Seen); 
                 }
 
